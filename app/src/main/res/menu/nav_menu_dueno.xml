@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@android:drawable/ic_menu_edit"
+            android:title="Ajustar Perfil" />
+        <item
+            android:id="@+id/nav_politica"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="Política de la aplicación" />
+    </group>
+    <item android:title="Cuenta">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@android:drawable/ic_lock_power_off"
+                android:title="Cerrar sesión" />
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,107 @@
+<resources>
+    <string name="app_name">Dog Rider</string>
+    <string name="login_title">Dog Rider</string>
+    <string name="hint_email_login">Correo electrónico</string>
+    <string name="hint_password_login">Contraseña</string>
+    <string name="btn_login">Iniciar Sesión</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="not_registered">¿No tienes cuenta? Regístrate aquí</string>
+    <string name="desc_logo">Logo de la aplicación</string>
+
+    <!-- Register Screen -->
+    <string name="register_title">Crear cuenta</string>
+    <string name="label_nombre">Nombre</string>
+    <string name="hint_nombre">Ej: Juan</string>
+    <string name="label_apellido">Apellido</string>
+    <string name="hint_apellido">Ej: Pérez</string>
+    <string name="label_telefono">Teléfono</string>
+    <string name="hint_telefono">Ej: +56912345678</string>
+    <string name="label_email">Correo electrónico</string>
+    <string name="hint_email_register">Ej: @gmail.com</string>
+    <string name="label_password">Cree su contraseña</string>
+    <string name="hint_password_register">Ej:contraseña123</string>
+    <string name="label_walker">seleccione si desea ser pasedor</string>
+    <string name="select_option">Seleccionar</string>
+    <string name="btn_create_account">Crear cuenta</string>
+    <string name="desc_back">Volver al login</string>
+
+    <!-- Pantalla Recuperar Contraseña -->
+    <string name="titulo_recuperar">Recuperar contraseña</string>
+    <string name="instrucciones_recuperar">Ingrese su correo para enviarle un enlace de recuperación</string>
+    <string name="btn_enviar_enlace">Enviar enlace</string>
+
+    <!-- Pantalla Cambiar Contraseña -->
+    <string name="titulo_cambiar">Nueva contraseña</string>
+    <string name="label_codigo">Código de verificación</string>
+    <string name="hint_codigo">Ej: 123456</string>
+    <string name="label_nueva_clave">Nueva contraseña</string>
+    <string name="label_confirmar_clave">Confirmar contraseña</string>
+    <string name="btn_cambiar_clave">Actualizar contraseña</string>
+
+    <!-- Pantalla Home Dueño -->
+    <string name="titulo_mis_mascotas">Mis Mascotas</string>
+    <string name="link_ver_todas">Ver todas</string>
+    <string name="link_ver_menos">Ver menos</string>
+    <string name="btn_anadir_mascota">+ Añadir Mascota</string>
+    <string name="titulo_proximas_citas">Próximas Citas</string>
+    <string name="nav_inicio">Inicio</string>
+    <string name="nav_citas">Citas</string>
+    <string name="nav_chat">Chat</string>
+    <string name="titulo_solicitar_cita">Solicitar Cita</string>
+    <string name="label_selecciona_mascota">Selecciona tu mascota</string>
+    <string name="label_duracion_paseo">Duración del paseo</string>
+    <string name="chip_30min">30 min</string>
+    <string name="chip_60min">60 min (Recomendado)</string>
+    <string name="chip_90min">90 min</string>
+    <string name="chip_custom">Personalizado</string>
+    <string name="hint_minutos_custom">Minutos (ej: 45)</string>
+    <string name="label_precio_estimado">Precio Estimado</string>
+    <string name="precio_cero">$0</string>
+    <string name="label_fecha">Fecha</string>
+    <string name="label_hora">Hora</string>
+    <string name="seleccionar_punto">Seleccionar...</string>
+    <string name="hora_vacia">--:--</string>
+    <string name="label_notas_especiales">Notas especiales</string>
+    <string name="hint_notas_paseo">Ej: Recoger en la puerta trasera</string>
+    <string name="counter_150">%1$d/150</string>
+    <string name="formato_fecha">%1$d/%2$d/%3$d</string>
+    <string name="formato_fecha_hora">%1$s, %2$s</string>
+    <string name="btn_confirmar_solicitud">Confirmar Solicitud</string>
+    <string name="titulo_todas_citas">Todas mis citas</string>
+    <string name="titulo_perfil">Ajustar Perfil</string>
+    <string name="info_personal">Información Personal</string>
+    <string name="email_no_editable">Email (No editable)</string>
+    <string name="btn_guardar_cambios">Guardar Cambios</string>
+    <string name="hint_nombre_perfil">Tu nombre</string>
+    <string name="hint_apellido_perfil">Tu apellido</string>
+    <string name="hint_telefono_perfil">Ej: +569 1234 5678</string>
+    <string name="email_placeholder">email@ejemplo.com</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="sin_notificaciones">No tienes notificaciones pendientes</string>
+    <string name="cero">0</string>
+    <string name="desc_menu">Menú de navegación</string>
+    <string name="desc_profile">Foto de perfil</string>
+    <string name="desc_notifications">Campana de notificaciones</string>
+    <string name="desc_mascota">Foto de la mascota</string>
+    <string name="desc_calendario">Icono de calendario</string>
+    <string name="desc_info">Icono de información</string>
+    <string name="error_select_walker">Seleccione si es paseador</string>
+    <string name="resend_counter">Reenviar en: %1$ds</string>
+    <string name="titulo_paseo_mascota">Paseo de %1$s</string>
+    <string name="info_duracion">Duración: %1$s</string>
+    <string name="info_precio">Precio: %1$s</string>
+    <string name="info_notas">Notas: %1$s</string>
+    <string name="sin_notas">Sin notas</string>
+    <string name="error_duplicado">Ya existe un paseo para %1$s en esa fecha y hora</string>
+    <string name="msg_sincronizando">Sincronizando con la nube…</string>
+    <string name="error_laboral">Horario laboral: 07:30 AM a 11:00 PM</string>
+    <string name="msg_actualizando_perfil">Actualizando perfil…</string>
+    <string name="error_servidor_codigo">Error del servidor (%1$d)</string>
+    <string name="error_fallo_msg">Fallo: %1$s</string>
+    <string name="label_nombre_placeholder">Nombre</string>
+    <string name="label_raza_placeholder">Raza</string>
+    <string name="label_edad_placeholder">Edad</string>
+    <string name="msg_info_placeholder">Información detallada…</string>
+    <string name="label_titulo_notif">Notificación</string>
+    <string name="label_hora_notif">12:00</string>
+</resources>

@@ -1,0 +1,19 @@
+# Android Studio / IntelliJ ignore
+*.iml
+.gradle
+/local.properties
+/.idea/
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Kotlin ignore
+.kotlin
+
+# Device specific ignore
+.DS_Store
+
+# Log files
+*.log

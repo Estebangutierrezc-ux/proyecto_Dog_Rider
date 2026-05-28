@@ -1,0 +1,215 @@
+package com.example.dog_rider_login
+
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.dog_rider_login.local.BaseDatosLocal
+import com.example.dog_rider_login.local.entities.CitaLocal
+import com.example.dog_rider_login.network.RetrofitClient
+import com.example.dog_rider_login.network.models.AuthResponse
+import com.example.dog_rider_login.network.models.CitaRequest
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.Calendar
+import java.util.Locale
+
+class SolicitarCitaActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_solicitar_cita)
+
+        val btnBack = findViewById<ImageButton>(R.id.btnBackSolicitarCita)
+        val spinnerMascotas = findViewById<Spinner>(R.id.spinnerMascotasCita)
+        val tvFecha = findViewById<TextView>(R.id.tvFechaSeleccionada)
+        val tvHora = findViewById<TextView>(R.id.tvHoraSeleccionada)
+        val tvPrecioEstimado = findViewById<TextView>(R.id.tvPrecioEstimado)
+        val chipGroupDuracion = findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupDuracion)
+        val etDuracionPersonalizada = findViewById<android.widget.EditText>(R.id.etDuracionPersonalizada)
+        val etNotas = findViewById<android.widget.EditText>(R.id.etNotasCita)
+        val tvCharCounter = findViewById<TextView>(R.id.tvCharCounter)
+        val btnConfirmar = findViewById<Button>(R.id.btnConfirmarCita)
+
+        btnBack.setOnClickListener { finish() }
+
+        // Contador de caracteres para notas
+        etNotas.addTextChangedListener(
+            object : android.text.TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val currentLength = s?.length ?: 0
+                    tvCharCounter.text = getString(R.string.counter_150, currentLength)
+                }
+                override fun afterTextChanged(s: android.text.Editable?) {}
+            },
+        )
+
+        // Mock de Mascotas
+        val mascotas = listOf("Seleccionar", "Max", "Luna", "Toby")
+        val adapterMascotas = ArrayAdapter(this, R.layout.item_spinner, mascotas)
+        adapterMascotas.setDropDownViewResource(R.layout.item_spinner)
+        spinnerMascotas.adapter = adapterMascotas
+
+        // Lógica de Precios y Duración (en CLP)
+        val precioPorMinuto = 167 // Aprox $10.000 por hora
+        val formatoCLP = java.text.DecimalFormat("$#,###")
+        
+        fun actualizarPrecio(minutos: Int) {
+            val total = minutos * precioPorMinuto
+            tvPrecioEstimado.text = formatoCLP.format(total)
+        }
+
+        chipGroupDuracion.setOnCheckedStateChangeListener { _, checkedIds ->
+            etDuracionPersonalizada.visibility = View.GONE
+            val checkedId = checkedIds.firstOrNull() ?: View.NO_ID
+            when (checkedId) {
+                R.id.chip30min -> actualizarPrecio(30)
+                R.id.chip60min -> actualizarPrecio(60)
+                R.id.chip90min -> actualizarPrecio(90)
+                R.id.chipCustom -> {
+                    etDuracionPersonalizada.visibility = View.VISIBLE
+                    tvPrecioEstimado.text = getString(R.string.precio_cero)
+                }
+            }
+        }
+
+        etDuracionPersonalizada.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val mins = s.toString().toIntOrNull() ?: 0
+                actualizarPrecio(mins)
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
+        // Configurar DatePicker
+        tvFecha.setOnClickListener {
+            val c = Calendar.getInstance()
+            val datePicker = DatePickerDialog(
+                this,
+                { _, year, month, day ->
+                    tvFecha.text = getString(R.string.formato_fecha, day, month + 1, year)
+                },
+                c[Calendar.YEAR],
+                c[Calendar.MONTH],
+                c[Calendar.DAY_OF_MONTH],
+            )
+            
+            // No permitir seleccionar días anteriores al actual
+            datePicker.datePicker.minDate = System.currentTimeMillis() - 1000
+            datePicker.show()
+        }
+
+        // Configurar TimePicker
+        tvHora.setOnClickListener {
+            val c = Calendar.getInstance()
+            TimePickerDialog(this, { _, hour, minute ->
+                // Validar horario laboral: 07:30 a 23:00
+                val horaEnMinutos = (hour * 60) + minute
+                val minLaboral = (7 * 60) + 30 // 07:30
+                val maxLaboral = 23 * 60     // 23:00
+
+                if (horaEnMinutos in minLaboral..maxLaboral) {
+                    tvHora.text = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+                } else {
+                    Toast.makeText(this, getString(R.string.error_laboral), Toast.LENGTH_LONG).show()
+                }
+            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show()
+        }
+
+        btnConfirmar.setOnClickListener {
+            val mascota = spinnerMascotas.selectedItem.toString()
+            val chipId = chipGroupDuracion.checkedChipIds.firstOrNull() ?: View.NO_ID
+            
+            val duracionValida = when (chipId) {
+                R.id.chip30min, R.id.chip60min, R.id.chip90min -> true
+                R.id.chipCustom -> etDuracionPersonalizada.text.isNotEmpty()
+                else -> false
+            }
+
+            if (mascota == "Seleccionar" || !duracionValida) {
+                Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val fecha = tvFecha.text.toString()
+            val hora = tvHora.text.toString()
+
+            if (fecha == "Seleccionar..." || hora == "--:--") {
+                Toast.makeText(this, "Por favor seleccione fecha y hora", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val precio = tvPrecioEstimado.text.toString()
+            val notas = etNotas.text.toString()
+
+            // Obtener el email del usuario logueado (Consistente con MainActivity)
+            val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+            val emailLogueado = sharedPref.getString("user_email", "usuario@desconocido.com") ?: ""
+
+            // Verificar duplicados antes de procesar
+            lifecycleScope.launch {
+                val db = BaseDatosLocal.obtenerInstancia(this@SolicitarCitaActivity)
+                val duplicados = db.citaDao().verificarDuplicado(mascota, fecha, hora, emailLogueado)
+
+                if (duplicados > 0) {
+                    Toast.makeText(this@SolicitarCitaActivity, 
+                        getString(R.string.error_duplicado, mascota), 
+                        Toast.LENGTH_LONG).show()
+                } else {
+                    val duracion = when (chipId) {
+                        R.id.chip30min -> "30 min"
+                        R.id.chip60min -> "60 min"
+                        R.id.chip90min -> "90 min"
+                        else -> "${etDuracionPersonalizada.text} min"
+                    }
+
+                    // 1. Intentar guardar en Oracle (Cloud)
+                    val request = CitaRequest(emailLogueado, mascota, fecha, hora, duracion, precio, notas)
+                    Toast.makeText(this@SolicitarCitaActivity, getString(R.string.msg_sincronizando), Toast.LENGTH_SHORT).show()
+
+                    RetrofitClient.instance.solicitarPaseo(request).enqueue(object : Callback<AuthResponse> {
+                        override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                            if (response.isSuccessful && response.body()?.success == true) {
+                                // 2. Si se guardó en Oracle, guardamos en la base de datos local (Room)
+                                lifecycleScope.launch {
+                                    val nuevaCita = CitaLocal(
+                                        usuarioEmail = emailLogueado, // Guardamos de quién es la cita
+                                        mascota = mascota,
+                                        fecha = fecha,
+                                        hora = hora,
+                                        duracion = duracion,
+                                        precio = precio,
+                                        notas = notas
+                                    )
+                                    
+                                    db.citaDao().insertarCita(nuevaCita)
+
+                                    Toast.makeText(this@SolicitarCitaActivity, "Paseo guardado con éxito", Toast.LENGTH_LONG).show()
+                                    finish()
+                                }
+                            } else {
+                                val msg = response.body()?.message ?: "Error al guardar en el servidor"
+                                Toast.makeText(this@SolicitarCitaActivity, msg, Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                            Toast.makeText(this@SolicitarCitaActivity, "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
+                        }
+                    })
+                }
+            }
+        }
+    }
+}

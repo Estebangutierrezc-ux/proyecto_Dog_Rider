@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue_primary">#4285F4</color>
+    <color name="light_gray">#D3D3D3</color>
+    <color name="edit_text_border">#CCCCCC</color>
+    <color name="spinner_bg">#EEEEEE</color>
+    <color name="red_error">#FF0000</color>
+</resources>

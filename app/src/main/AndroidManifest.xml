@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dog_rider_login"
         android:usesCleartextTraffic="true">
+
+        <!-- ACTIVIDADES ORIGINALES (LOGIN Y REGISTRO) -->
         <activity
             android:name=".SolicitarCitaActivity"
             android:exported="false" />
@@ -35,16 +37,43 @@
             android:name=".RegisterActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
+
+        <!-- Esta es la actividad que inicia la App (Login) -->
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- ACTIVIDADES DE LA INTERFAZ PASEADOR -->
+        <activity
+            android:name=".MainActivityinter"
+            android:exported="false" />
+        <activity
+            android:name=".PaseosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatDetalleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleMascotaActivity"
+            android:exported="false" />
+
+        <!-- ACTIVIDADES DE AÑADIR MASCOTA -->
+        <activity
+            android:name=".MainActivityañadir"
+            android:exported="false" />
+        <activity
+            android:name=".AddPetActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

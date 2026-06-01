@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.dog_rider_login.local.BaseDatosLocal
 import com.example.dog_rider_login.local.entities.CitaLocal
+import com.example.dog_rider_login.local.entities.MascotaLocal
 import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.CitaRequest
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,11 +56,23 @@ class SolicitarCitaActivity : AppCompatActivity() {
             },
         )
 
-        // Mock de Mascotas
-        val mascotas = listOf("Seleccionar", "Max", "Luna", "Toby")
-        val adapterMascotas = ArrayAdapter(this, R.layout.item_spinner, mascotas)
-        adapterMascotas.setDropDownViewResource(R.layout.item_spinner)
-        spinnerMascotas.adapter = adapterMascotas
+        // Cargar Mascotas Reales del Usuario en el Spinner
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val emailUser = sharedPref.getString("user_email", "") ?: ""
+
+        lifecycleScope.launch {
+            BaseDatosLocal.obtenerInstancia(this@SolicitarCitaActivity)
+                .mascotaDao()
+                .obtenerMascotasPorDuenio(emailUser)
+                .collectLatest { listaMascotas ->
+                    val nombres = mutableListOf(getString(R.string.select_option))
+                    nombres.addAll(listaMascotas.map { it.nombre })
+                    
+                    val adapterMascotas = ArrayAdapter(this@SolicitarCitaActivity, R.layout.item_spinner, nombres)
+                    adapterMascotas.setDropDownViewResource(R.layout.item_spinner)
+                    spinnerMascotas.adapter = adapterMascotas
+                }
+        }
 
         // Lógica de Precios y Duración (en CLP)
         val precioPorMinuto = 167 // Aprox $10.000 por hora
@@ -154,7 +168,6 @@ class SolicitarCitaActivity : AppCompatActivity() {
             val notas = etNotas.text.toString()
 
             // Obtener el email del usuario logueado (Consistente con MainActivity)
-            val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
             val emailLogueado = sharedPref.getString("user_email", "usuario@desconocido.com") ?: ""
 
             // Verificar duplicados antes de procesar

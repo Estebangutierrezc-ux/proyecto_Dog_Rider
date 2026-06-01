@@ -22,6 +22,7 @@ import com.example.dog_rider_login.adapters.MascotaAdapter
 import com.example.dog_rider_login.adapters.NotificacionAdapter
 import com.example.dog_rider_login.local.BaseDatosLocal
 import com.example.dog_rider_login.local.entities.CitaLocal
+import com.example.dog_rider_login.local.entities.MascotaLocal
 import com.example.dog_rider_login.models.Mascota
 import com.example.dog_rider_login.models.Notificacion
 import com.google.android.material.navigation.NavigationView
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class HomeDuenoActivity : AppCompatActivity() {
 
-    private var listaMascotasCompleta = listOf<Mascota>()
+    private var listaMascotasCompleta = listOf<MascotaLocal>()
     private var estaExpandidoMascotas = false
     
     private var listaCitasCompleta = listOf<CitaLocal>()
@@ -74,10 +75,6 @@ class HomeDuenoActivity : AppCompatActivity() {
                     val intent = Intent(this, AddPetActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_walker_mode -> {
-                    val intent = Intent(this, MainActivityinter::class.java)
-                    startActivity(intent)
-                }
                 R.id.nav_politica -> {
                     mostrarPoliticaPrivacidad()
                 }
@@ -89,12 +86,21 @@ class HomeDuenoActivity : AppCompatActivity() {
             true
         }
 
+        actualizarDatosNavegacion(navView)
+
         val tvVerTodasMascotas = findViewById<TextView>(R.id.tvVerTodasMascotas)
         val tvVerTodasCitas = findViewById<TextView>(R.id.tvVerTodasCitas)
         val tvTituloCitasHeader = findViewById<TextView>(R.id.tvTituloCitasHeader)
         val containerMascotas = findViewById<LinearLayout>(R.id.containerMascotas)
+        val btnAnadirMascota = findViewById<android.widget.Button>(R.id.btnAnadirMascota)
         
         val navCitas = findViewById<LinearLayout>(R.id.navCitas)
+
+        // Configurar Botón Añadir Mascota
+        btnAnadirMascota.setOnClickListener {
+            val intent = Intent(this, AddPetActivity::class.java)
+            startActivity(intent)
+        }
 
         // Elementos de Notificaciones
         val btnNotifications = findViewById<View>(R.id.btnNotificationsContainer)
@@ -127,15 +133,18 @@ class HomeDuenoActivity : AppCompatActivity() {
             layoutNotificacionesOverlay.visibility = View.GONE
         }
 
-        // Simular datos de Mascotas
-        listaMascotasCompleta = listOf(
-            Mascota(1, "Max", "Golden Retriever", "3 años"),
-            Mascota(2, "Luna", "Siamés", "2 años"),
-            Mascota(3, "Toby", "Beagle", "1 año"),
-            Mascota(4, "Rocky", "Boxer", "4 años"),
-            Mascota(5, "Bella", "Poodle", "2 años"),
-        )
-        
+        // Cargar Mascotas Reales filtradas por el usuario logueado
+        lifecycleScope.launch {
+            val emailLogueado = sharedPref.getString("user_email", "") ?: ""
+            BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity)
+                .mascotaDao()
+                .obtenerMascotasPorDuenio(emailLogueado)
+                .collectLatest { mascotas ->
+                    listaMascotasCompleta = mascotas
+                    actualizarListaMascotas(rvMascotas)
+                }
+        }
+
         // Cargar Citas Reales filtradas por el usuario logueado
         lifecycleScope.launch {
             val emailLogueado = sharedPref.getString("user_email", "") ?: ""
@@ -194,6 +203,29 @@ class HomeDuenoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refrescar datos del menú lateral al volver de Ajustes de Perfil
+        val navView = findViewById<NavigationView>(R.id.navView)
+        actualizarDatosNavegacion(navView)
+    }
+
+    private fun actualizarDatosNavegacion(navView: NavigationView) {
+        val headerView = navView.getHeaderView(0)
+        val tvNombreHeader = headerView.findViewById<TextView>(R.id.tvUserNameHeader)
+        val tvEmailHeader = headerView.findViewById<TextView>(R.id.tvUserEmailHeader)
+        
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val nombre = sharedPref.getString("user_name", "")
+        val apellido = sharedPref.getString("user_lastname", "")
+        val emailUser = sharedPref.getString("user_email", "usuario@ejemplo.com")
+
+        if (!nombre.isNullOrEmpty()) {
+            tvNombreHeader.text = getString(R.string.formato_nombre_completo, nombre, apellido)
+        }
+        tvEmailHeader.text = emailUser
     }
 
     private fun actualizarListaMascotas(recyclerView: RecyclerView) {

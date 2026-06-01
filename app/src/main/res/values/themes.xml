@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.Dog_rider_login" parent="Base.Theme.Dog_rider_login" />
+
+    <!-- Tema para evitar la pantalla blanca al inicio -->
+    <style name="Theme.App.Starter" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

@@ -1,187 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="#F5F5F5"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="30dp">
+        android:padding="24dp">
 
-        <!-- CONTENEDOR -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:text="@string/titulo_add_pet"
+            android:textColor="@color/blue_primary"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- IMAGEN -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="60dp"
+            app:cardElevation="2dp">
+
+            <ImageView
+                android:id="@+id/imgMascota"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/desc_mascota"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery" />
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnSubirImagen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/blue_primary"
+            android:text="@string/btn_subir"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+        <!-- Formulario -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/label_nombre_mascota"
+            android:textColor="#8F8F8F"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etNombre"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/hint_nombre_mascota"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:maxLength="30"
+            android:paddingHorizontal="16dp"
+            android:textColor="#333333" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_raza"
+            android:textColor="#8F8F8F"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etRaza"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/hint_raza"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLength="30"
+            android:paddingHorizontal="16dp"
+            android:textColor="#333333" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:background="#F5F5F5">
+            android:layout_marginTop="16dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <!-- TITULO -->
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Añadir Nueva Mascota"
-                android:textColor="#8A8A8A"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:layout_marginBottom="24dp"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <!-- IMAGEN -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_edad"
+                    android:textColor="#8F8F8F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/imgMascota"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:scaleType="fitCenter"/>
+                <EditText
+                    android:id="@+id/etEdad"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/edit_text_background"
+                    android:hint="@string/hint_edad"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="#333333" />
+            </LinearLayout>
 
-            <!-- BOTON SUBIR -->
+            <View
+                android:layout_width="16dp"
+                android:layout_height="1dp" />
 
-            <Button
-                android:id="@+id/btnSubirImagen"
-                android:layout_width="120dp"
-                android:layout_height="42dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="14dp"
-                android:backgroundTint="#4A86F7"
-                android:text="Subir"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"/>
-
-            <!-- LABEL NOMBRE -->
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Nombre de la Mascota"
-                android:textColor="#8F8F8F"
-                android:textSize="12sp"
-                android:layout_marginTop="32dp"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <!-- NOMBRE -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_genero"
+                    android:textColor="#8F8F8F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etNombre"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="#CFCFCF"
-                android:hint="Ej: Max"
-                android:inputType="text"
-                android:maxLength="20"
-                android:textColor="#555555"
-                android:textColorHint="#9E9E9E"/>
-
-            <!-- LABEL RAZA -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Raza"
-                android:textColor="#8F8F8F"
-                android:textSize="12sp"
-                android:layout_marginTop="18dp"/>
-
-            <!-- RAZA -->
-
-            <EditText
-                android:id="@+id/etRaza"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="#CFCFCF"
-                android:hint="Ej: Golden Retriever"
-                android:inputType="text"
-                android:maxLength="30"
-                android:textColor="#555555"
-                android:textColorHint="#9E9E9E"/>
-
-            <!-- LABEL EDAD -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edad"
-                android:textColor="#8F8F8F"
-                android:textSize="12sp"
-                android:layout_marginTop="18dp"/>
-
-            <!-- EDAD -->
-
-            <EditText
-                android:id="@+id/etEdad"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="#CFCFCF"
-                android:hint="Ej: 3"
-                android:inputType="number"
-                android:maxLength="2"
-                android:textColor="#555555"
-                android:textColorHint="#9E9E9E"/>
-
-            <!-- LABEL GENERO -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Genero"
-                android:textColor="#8F8F8F"
-                android:textSize="12sp"
-                android:layout_marginTop="18dp"/>
-
-            <!-- GENERO -->
-
-            <Spinner
-                android:id="@+id/spGenero"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="#CFCFCF"/>
-
-            <!-- LABEL COMENTARIOS -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Comentarios"
-                android:textColor="#8F8F8F"
-                android:textSize="12sp"
-                android:layout_marginTop="18dp"/>
-
-            <!-- COMENTARIOS -->
-
-            <EditText
-                android:id="@+id/etComentarios"
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:backgroundTint="#CFCFCF"
-                android:gravity="top"
-                android:hint="Añade cualquier comentario adicional sobre tu mascota..."
-                android:inputType="textMultiLine"
-                android:maxLength="150"
-                android:textColor="#555555"
-                android:textColorHint="#9E9E9E"/>
-
-            <!-- BOTON GUARDAR -->
-
-            <Button
-                android:id="@+id/btnGuardar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="28dp"
-                android:backgroundTint="#4A86F7"
-                android:text="Guardar Mascota"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"/>
-
+                <Spinner
+                    android:id="@+id/spGenero"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/spinner_background" />
+            </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_comentarios"
+            android:textColor="#8F8F8F"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
+        <EditText
+            android:id="@+id/etComentarios"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="top"
+            android:hint="@string/hint_comentarios"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:maxLength="150"
+            android:padding="16dp"
+            android:textColor="#333333" />
+
+        <TextView
+            android:id="@+id/tvCharCounterAddPet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/counter_150"
+            android:textColor="@color/light_gray"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_background"
+            app:backgroundTint="@null"
+            android:text="@string/btn_guardar_mascota"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 </ScrollView>

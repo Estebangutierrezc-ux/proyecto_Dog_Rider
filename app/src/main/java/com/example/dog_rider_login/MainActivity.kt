@@ -113,13 +113,22 @@ class MainActivity : AppCompatActivity() {
                             putString("user_name", authResponse.nombre ?: "")
                             putString("user_lastname", authResponse.apellido ?: "")
                             putString("user_phone", authResponse.telefono ?: "")
+                            putBoolean("user_is_walker", authResponse.esPaseador ?: false)
                             apply()
                         }
 
                         Toast.makeText(this@MainActivity, "¡Hola de nuevo!", Toast.LENGTH_SHORT).show()
                         
-                        // Mandar al usuario a su pantalla principal (Home Dueño)
-                        val intent = Intent(this@MainActivity, HomeDuenoActivity::class.java)
+                        // Redirección inteligente según el rol del usuario
+                        val esPaseador = authResponse.esPaseador ?: false
+                        val intent = if (esPaseador) {
+                            // Si es paseador, va a la interfaz de paseador
+                            Intent(this@MainActivity, HomePaseadorActivity::class.java)
+                        } else {
+                            // Si es dueño, va a su Home correspondiente
+                            Intent(this@MainActivity, HomeDuenoActivity::class.java)
+                        }
+
                         startActivity(intent)
                         finish() 
                     } else {

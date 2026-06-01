@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dog_rider_login.R
-import com.example.dog_rider_login.models.Mascota
+import com.example.dog_rider_login.local.entities.MascotaLocal
 
-class MascotaAdapter(private val listaMascotas: List<Mascota>) :
+class MascotaAdapter(private val listaMascotas: List<MascotaLocal>) :
     RecyclerView.Adapter<MascotaAdapter.MascotaViewHolder>() {
 
     class MascotaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -17,6 +17,7 @@ class MascotaAdapter(private val listaMascotas: List<Mascota>) :
         val tvNombre: TextView = view.findViewById(R.id.tvNombreMascota)
         val tvRaza: TextView = view.findViewById(R.id.tvRazaMascota)
         val tvEdad: TextView = view.findViewById(R.id.tvEdadMascota)
+        val tvDetalles: TextView = view.findViewById(R.id.tvDetallesExtra)
         val layoutDetalles: View = view.findViewById(R.id.layoutDetallesMascota)
         val ivExpand: ImageView = view.findViewById(R.id.ivExpandIcon)
     }
@@ -28,10 +29,17 @@ class MascotaAdapter(private val listaMascotas: List<Mascota>) :
     }
 
     override fun onBindViewHolder(holder: MascotaViewHolder, position: Int) {
+        val context = holder.itemView.context
         val mascota = listaMascotas[position]
+        
         holder.tvNombre.text = mascota.nombre
         holder.tvRaza.text = mascota.raza
-        holder.tvEdad.text = mascota.edad
+        holder.tvEdad.text = context.getString(R.string.formato_edad, mascota.edad)
+        
+        val detallesExtra = "Género: ${mascota.genero}\n" +
+                           "Notas: ${mascota.notas.ifEmpty { context.getString(R.string.sin_notas) }}"
+        
+        holder.tvDetalles.text = detallesExtra
         
         // Manejar expansión
         holder.itemView.setOnClickListener {
@@ -41,11 +49,6 @@ class MascotaAdapter(private val listaMascotas: List<Mascota>) :
                 if (estaVisible) android.R.drawable.arrow_down_float 
                 else android.R.drawable.arrow_up_float
             )
-        }
-
-        // Si hay una imagen personalizada se pone, sino se deja el default
-        mascota.imagenResId?.let {
-            holder.ivMascota.setImageResource(it)
         }
     }
 

@@ -17,7 +17,7 @@ class ChatActivity : AppCompatActivity() {
 
         btnHome.setOnClickListener {
 
-            startActivity(Intent(this, MainActivityinter::class.java))
+            startActivity(Intent(this, HomePaseadorActivity::class.java))
 
         }
 

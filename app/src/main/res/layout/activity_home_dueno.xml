@@ -222,19 +222,19 @@
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_view"
-                    android:contentDescription="@string/nav_inicio"
-                    app:tint="@color/blue_primary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emoji_home"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/nav_inicio"
                     android:textColor="@color/blue_primary"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -248,12 +248,11 @@
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    android:contentDescription="@string/nav_citas"
-                    app:tint="@color/light_gray" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emoji_paseos"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -274,12 +273,11 @@
                 android:background="?attr/selectableItemBackground"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@android:drawable/stat_notify_chat"
-                    android:contentDescription="@string/nav_chat"
-                    app:tint="@color/light_gray" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emoji_chat"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"

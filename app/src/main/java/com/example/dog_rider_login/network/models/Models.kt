@@ -30,7 +30,8 @@ data class AuthResponse(
     val token: String? = null,
     val nombre: String? = null,
     val apellido: String? = null,
-    val telefono: String? = null
+    val telefono: String? = null,
+    val esPaseador: Boolean? = null
 )
 
 data class CitaRequest(

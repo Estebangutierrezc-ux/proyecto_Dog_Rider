@@ -49,6 +49,9 @@ dependencies {
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
 
+    // Volley (Usado en AddPetActivity por el compañero)
+    implementation("com.android.volley:volley:1.2.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

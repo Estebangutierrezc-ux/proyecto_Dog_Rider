@@ -173,14 +173,12 @@
                 <TextView
                     android:id="@+id/tvProfileEmail"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="32dp"
-                    android:background="@drawable/spinner_background"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="16dp"
+                    android:paddingHorizontal="4dp"
                     android:text="@string/email_placeholder"
-                    android:textColor="#999999"
+                    android:textColor="#666666"
                     android:textSize="16sp" />
 
                 <!-- Botón -->

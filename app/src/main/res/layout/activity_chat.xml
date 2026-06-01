@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,32 +6,30 @@
     android:background="#F5F5F5">
 
     <!-- HEADER -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
+        android:padding="24dp"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chats 💬"
-            android:textSize="34sp"
+            android:textSize="28sp"
+            android:textColor="@color/blue_primary"
             android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Conversaciones con dueños"
-            android:textSize="18sp"
-            android:textColor="#777777"
-            android:layout_marginTop="6dp"/>
-
+            android:textSize="16sp"
+            android:textColor="@color/light_gray"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 
     <!-- LISTA CHATS -->
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -42,15 +39,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="24dp">
 
             <!-- ROCKY -->
-
             <LinearLayout
                 android:id="@+id/rockyChat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="@color/white"
+                android:elevation="2dp"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:layout_marginBottom="16dp"
@@ -58,9 +55,10 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/rocky"/>
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/rocky"
+                    android:scaleType="centerCrop"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -72,28 +70,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Dueño de Rocky"
-                        android:textSize="22sp"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hola 👋 ¿Cómo va Rocky?"
-                        android:textSize="16sp"
-                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:textColor="@color/light_gray"
                         android:layout_marginTop="4dp"/>
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <!-- LUNA -->
-
             <LinearLayout
                 android:id="@+id/lunaChat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="@color/white"
+                android:elevation="2dp"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:layout_marginBottom="16dp"
@@ -101,9 +98,10 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/luna"/>
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/luna"
+                    android:scaleType="centerCrop"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -115,37 +113,37 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Dueño de Luna"
-                        android:textSize="22sp"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gracias por cuidar a Luna 🐶"
-                        android:textSize="16sp"
-                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:textColor="@color/light_gray"
                         android:layout_marginTop="4dp"/>
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <!-- MAX -->
-
             <LinearLayout
                 android:id="@+id/maxChat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="@color/white"
+                android:elevation="2dp"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/max"/>
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/max"
+                    android:scaleType="centerCrop"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -157,40 +155,36 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Dueño de Max"
-                        android:textSize="22sp"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Max está feliz 😄"
-                        android:textSize="16sp"
-                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:textColor="@color/light_gray"
                         android:layout_marginTop="4dp"/>
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </LinearLayout>
-
     </ScrollView>
 
     <!-- BOTTOM NAVIGATION -->
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:background="#FFFFFF"
+        android:layout_height="72dp"
+        android:background="@color/white"
+        android:elevation="8dp"
         android:orientation="horizontal"
         android:gravity="center">
 
         <!-- HOME -->
-
         <LinearLayout
             android:id="@+id/btnHome"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -204,16 +198,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"/>
-
+                android:text="Home"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp"/>
         </LinearLayout>
 
         <!-- PASEOS -->
-
         <LinearLayout
             android:id="@+id/btnPaseos"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -227,15 +221,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Paseos"/>
-
+                android:text="Paseos"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp"/>
         </LinearLayout>
 
         <!-- CHAT -->
-
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -250,10 +244,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chat"
-                android:textStyle="bold"/>
-
+                android:textColor="@color/blue_primary"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

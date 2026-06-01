@@ -70,6 +70,14 @@ class HomeDuenoActivity : AppCompatActivity() {
                     val intent = Intent(this, PerfilActivity::class.java)
                     startActivity(intent)
                 }
+                R.id.nav_add_pet -> {
+                    val intent = Intent(this, AddPetActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_walker_mode -> {
+                    val intent = Intent(this, MainActivityinter::class.java)
+                    startActivity(intent)
+                }
                 R.id.nav_politica -> {
                     mostrarPoliticaPrivacidad()
                 }

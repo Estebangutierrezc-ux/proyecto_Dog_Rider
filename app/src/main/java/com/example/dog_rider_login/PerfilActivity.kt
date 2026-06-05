@@ -12,6 +12,7 @@ import androidx.core.content.edit
 import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.UpdateProfileRequest
+import com.example.dog_rider_login.utils.NavigationUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,6 +22,9 @@ class PerfilActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfil)
+
+        // Navigation Bar Inferior
+        NavigationUtils.configurarNavegacion(this)
 
         val btnBack = findViewById<ImageButton>(R.id.btnBackProfile)
         val etNombre = findViewById<EditText>(R.id.etProfileNombre)

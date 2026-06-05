@@ -35,13 +35,23 @@ data class AuthResponse(
 )
 
 data class CitaRequest(
-    val usuarioEmail: String,
+    val id: Int? = null,
+    val usuarioEmail: String? = null, 
+    val duenoNombre: String? = null,
     val mascota: String,
+    val raza: String? = null,  // Añadimos Raza real
+    val edad: String? = null,  // Añadimos Edad real
     val fecha: String,
     val hora: String,
     val duracion: String,
     val precio: String,
-    val notas: String
+    val notas: String,
+    val estado: String? = "PENDIENTE"
+)
+
+data class AceptarPaseoRequest(
+    val citaId: Int,
+    val paseadorEmail: String
 )
 
 data class UpdateProfileRequest(

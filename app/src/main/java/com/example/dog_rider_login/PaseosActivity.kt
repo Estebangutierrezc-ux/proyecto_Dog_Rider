@@ -1,106 +1,112 @@
 package com.example.dog_rider_login
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
+import android.os.Handler
+import android.os.Looper
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.dog_rider_login.adapters.PaseoPendienteAdapter
+import com.example.dog_rider_login.network.RetrofitClient
+import com.example.dog_rider_login.network.models.AuthResponse
+import com.example.dog_rider_login.network.models.AceptarPaseoRequest
+import com.example.dog_rider_login.network.models.CitaRequest
+import com.example.dog_rider_login.utils.NavigationUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PaseosActivity : AppCompatActivity() {
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val refreshRunnable = object : Runnable {
+        override fun run() {
+            val rvPaseos = findViewById<RecyclerView>(R.id.rvPaseosPendientes)
+            val tvSinPaseos = findViewById<TextView>(R.id.tvSinPaseos)
+            cargarPaseosReales(rvPaseos, tvSinPaseos)
+            handler.postDelayed(this, 5000) // Refrescar cada 5 segundos
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paseos)
 
-        // VOLVER
+        val backButton = findViewById<ImageButton>(R.id.backButton)
+        
+        // Navigation Bar Inferior
+        NavigationUtils.configurarNavegacion(this)
 
-        val backButton = findViewById<Button>(R.id.backButton)
+        backButton.setOnClickListener { finish() }
+        
+        findViewById<RecyclerView>(R.id.rvPaseosPendientes).layoutManager = LinearLayoutManager(this)
+    }
 
-        backButton.setOnClickListener {
+    override fun onResume() {
+        super.onResume()
+        handler.post(refreshRunnable)
+    }
 
-            finish()
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(refreshRunnable)
+    }
 
-        }
+    private fun cargarPaseosReales(recyclerView: RecyclerView, emptyView: TextView) {
+        RetrofitClient.instance.obtenerPaseosPendientes().enqueue(object : Callback<List<CitaRequest>> {
+            override fun onResponse(call: Call<List<CitaRequest>>, response: Response<List<CitaRequest>>) {
+                if (response.isSuccessful) {
+                    val lista = response.body()?.filter { it.estado == "PENDIENTE" } ?: emptyList()
+                    if (lista.isNotEmpty()) {
+                        recyclerView.adapter = PaseoPendienteAdapter(lista) { paseo ->
+                            confirmarAceptarPaseo(paseo)
+                        }
+                        recyclerView.visibility = android.view.View.VISIBLE
+                        emptyView.visibility = android.view.View.GONE
+                    } else {
+                        recyclerView.visibility = android.view.View.GONE
+                        emptyView.visibility = android.view.View.VISIBLE
+                    }
+                } else {
+                    Toast.makeText(this@PaseosActivity, "Error al obtener paseos", Toast.LENGTH_SHORT).show()
+                }
+            }
 
-        // HOME
+            override fun onFailure(call: Call<List<CitaRequest>>, t: Throwable) {
+                Toast.makeText(this@PaseosActivity, "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
 
-        val btnHome = findViewById<LinearLayout>(R.id.btnHome)
+    private fun confirmarAceptarPaseo(paseo: CitaRequest) {
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val emailPaseador = sharedPref.getString("user_email", "") ?: ""
 
-        btnHome.setOnClickListener {
-
-            startActivity(Intent(this, HomePaseadorActivity::class.java))
-
-        }
-
-        // CHAT
-
-        val btnChat = findViewById<LinearLayout>(R.id.btnChat)
-
-        btnChat.setOnClickListener {
-
-            startActivity(Intent(this, ChatActivity::class.java))
-
-        }
-
-        // ROCKY
-
-        val rockyCard = findViewById<LinearLayout>(R.id.rockyCard)
-
-        rockyCard.setOnClickListener {
-
-            val intent = Intent(this, DetalleMascotaActivity::class.java)
-
-            intent.putExtra("nombre", "Rocky")
-            intent.putExtra("raza", "Bulldog")
-            intent.putExtra("edad", "4 años")
-            intent.putExtra("personalidad", "Juguetón y amigable")
-            intent.putExtra("hora", "03:00 PM")
-            intent.putExtra("precio", "$12.000 CLP")
-            intent.putExtra("imagen", R.drawable.rocky)
-
-            startActivity(intent)
-
-        }
-
-        // LUNA
-
-        val lunaCard = findViewById<LinearLayout>(R.id.lunaCard)
-
-        lunaCard.setOnClickListener {
-
-            val intent = Intent(this, DetalleMascotaActivity::class.java)
-
-            intent.putExtra("nombre", "Luna")
-            intent.putExtra("raza", "Beagle")
-            intent.putExtra("edad", "2 años")
-            intent.putExtra("personalidad", "Tierna y energética")
-            intent.putExtra("hora", "05:00 PM")
-            intent.putExtra("precio", "$10.000 CLP")
-            intent.putExtra("imagen", R.drawable.luna)
-
-            startActivity(intent)
-
-        }
-
-        // MAX
-
-        val maxCard = findViewById<LinearLayout>(R.id.maxCard)
-
-        maxCard.setOnClickListener {
-
-            val intent = Intent(this, DetalleMascotaActivity::class.java)
-
-            intent.putExtra("nombre", "Max")
-            intent.putExtra("raza", "Golden Retriever")
-            intent.putExtra("edad", "3 años")
-            intent.putExtra("personalidad", "Muy obediente y tranquilo")
-            intent.putExtra("hora", "06:30 PM")
-            intent.putExtra("precio", "$15.000 CLP")
-            intent.putExtra("imagen", R.drawable.max)
-
-            startActivity(intent)
-
-        }
-
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Confirmar Paseo")
+            .setMessage("¿Deseas aceptar el paseo de ${paseo.mascota}?")
+            .setPositiveButton("Sí, aceptar") { _, _ ->
+                val request = AceptarPaseoRequest(
+                    citaId = paseo.id ?: 0,
+                    paseadorEmail = emailPaseador
+                )
+                
+                RetrofitClient.instance.aceptarPaseo(request).enqueue(object : Callback<AuthResponse> {
+                    override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                        if (response.isSuccessful && response.body()?.success == true) {
+                            Toast.makeText(this@PaseosActivity, "Paseo aceptado. ¡Ve por ${paseo.mascota}!", Toast.LENGTH_LONG).show()
+                            finish()
+                        }
+                    }
+                    override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                        Toast.makeText(this@PaseosActivity, "Fallo al conectar", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 }

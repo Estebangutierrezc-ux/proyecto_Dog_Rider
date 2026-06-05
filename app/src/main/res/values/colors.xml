@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="blue_primary">#4285F4</color>
-    <color name="light_gray">#D3D3D3</color>
-    <color name="edit_text_border">#CCCCCC</color>
-    <color name="spinner_bg">#EEEEEE</color>
-    <color name="red_error">#FF0000</color>
+    <!-- Colores base otoñales y Golden Retriever -->
+    <color name="black">#3E2723</color> <!-- Marrón oscuro (Corteza de árbol) -->
+    <color name="white">#FFFDF5</color> <!-- Crema cálido (Lana suave) -->
+
+    <!-- El "Azul" ahora será un Naranja Otoñal vibrante -->
+    <color name="blue_primary">#D87B05</color> <!-- Naranja quemado / Hoja de otoño -->
+    <color name="golden_gold">#FFB74D</color> <!-- Oro Golden Retriever -->
+
+    <color name="light_gray">#8D6E63</color> <!-- Gris terroso / Arena -->
+    <color name="edit_text_border">#D7CCC8</color> <!-- Beige suave -->
+    <color name="spinner_bg">#FDF2E9</color> <!-- Melocotón muy pálido -->
+    <color name="red_error">#A52A2A</color> <!-- Rojo ladrillo / Arce -->
+
+    <!-- Fondos de pantalla -->
+    <color name="background_autumn">#F5EEDA</color>
+
+    <!-- Colores fijos -->
+    <color name="static_white">#FFFFFF</color>
+    <color name="static_black">#000000</color>
 </resources>

@@ -25,7 +25,7 @@
                 android:layout_height="32dp"
                 android:src="@android:drawable/ic_menu_today"
                 android:contentDescription="@string/desc_calendario"
-                app:tint="@color/white" />
+                app:tint="@color/static_white" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/seleccionar_punto"
-                    android:textColor="@color/white"
+                    android:textColor="@color/static_white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_raza_placeholder"
-                    android:textColor="@color/white"
+                    android:textColor="@color/static_white"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -58,7 +58,7 @@
                 android:layout_height="24dp"
                 android:src="@android:drawable/arrow_down_float"
                 android:contentDescription="@string/desc_info"
-                app:tint="@color/white" />
+                app:tint="@color/static_white" />
         </LinearLayout>
 
         <!-- Área Expandible -->
@@ -88,9 +88,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/msg_info_placeholder"
-                    android:textColor="@color/white"
+                    android:textColor="@color/static_white"
                     android:textSize="14sp" />
             </ScrollView>
+
+            <Button
+                android:id="@+id/btnEliminarHistorial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/red_error"
+                android:text="ELIMINAR"
+                android:textColor="@color/static_white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/background_autumn">
 
     <!-- HEADER -->
     <LinearLayout
+        android:id="@+id/headerChat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="24dp"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chats 💬"
-            android:textSize="28sp"
             android:textColor="@color/blue_primary"
-            android:textStyle="bold"/>
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Conversaciones con dueños"
-            android:textSize="16sp"
+            android:layout_marginTop="4dp"
+            android:text="Conversaciones activas"
             android:textColor="@color/light_gray"
-            android:layout_marginTop="4dp"/>
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- LISTA CHATS -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+        app:layout_constraintTop_toBottomOf="@id/headerChat">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,212 +46,195 @@
             android:paddingHorizontal="24dp">
 
             <!-- ROCKY -->
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:id="@+id/rockyChat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:elevation="2dp"
-                android:orientation="horizontal"
-                android:padding="16dp"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/rocky"
-                    android:scaleType="centerCrop"/>
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                    <TextView
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/rocky"
+                        android:contentDescription="@string/desc_mascota" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dueño de Rocky"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"/>
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hola 👋 ¿Cómo va Rocky?"
-                        android:textSize="14sp"
-                        android:textColor="@color/light_gray"
-                        android:layout_marginTop="4dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dueño de Rocky"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Hola 👋 ¿Cómo va Rocky?"
+                            android:textColor="@color/light_gray"
+                            android:textSize="14sp" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- LUNA -->
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:id="@+id/lunaChat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:elevation="2dp"
-                android:orientation="horizontal"
-                android:padding="16dp"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/luna"
-                    android:scaleType="centerCrop"/>
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                    <TextView
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/luna"
+                        android:contentDescription="@string/desc_mascota" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dueño de Luna"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"/>
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gracias por cuidar a Luna 🐶"
-                        android:textSize="14sp"
-                        android:textColor="@color/light_gray"
-                        android:layout_marginTop="4dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dueño de Luna"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Gracias por cuidar a Luna 🐶"
+                            android:textColor="@color/light_gray"
+                            android:textSize="14sp" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <!-- MAX -->
-            <LinearLayout
-                android:id="@+id/maxChat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:elevation="2dp"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/max"
-                    android:scaleType="centerCrop"/>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dueño de Max"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Max está feliz 😄"
-                        android:textSize="14sp"
-                        android:textColor="@color/light_gray"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- BOTTOM NAVIGATION -->
+    <!-- Navigation Bar Inferior -->
     <LinearLayout
+        android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="80dp"
         android:background="@color/white"
-        android:elevation="8dp"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:baselineAligned="false"
         android:orientation="horizontal"
-        android:gravity="center">
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- HOME -->
         <LinearLayout
-            android:id="@+id/btnHome"
+            android:id="@+id/navInicio"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🏠"
-                android:textSize="24sp"/>
+                android:text="@string/emoji_home"
+                android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/nav_inicio"
                 android:textColor="@color/light_gray"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- PASEOS -->
         <LinearLayout
-            android:id="@+id/btnPaseos"
+            android:id="@+id/navCitas"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🐕"
-                android:textSize="24sp"/>
+                android:text="@string/emoji_paseos"
+                android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Paseos"
+                android:text="@string/nav_citas"
                 android:textColor="@color/light_gray"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- CHAT -->
         <LinearLayout
+            android:id="@+id/navChat"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="💬"
-                android:textSize="24sp"/>
+                android:text="@string/emoji_chat"
+                android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chat"
+                android:text="@string/nav_chat"
                 android:textColor="@color/blue_primary"
                 android:textStyle="bold"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

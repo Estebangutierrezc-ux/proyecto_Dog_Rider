@@ -16,6 +16,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.dog_rider_login.local.BaseDatosLocal
 import com.example.dog_rider_login.local.entities.MascotaLocal
+import com.example.dog_rider_login.utils.NavigationUtils
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -39,6 +40,9 @@ class AddPetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_pet)
+
+        // Navigation Bar Inferior
+        NavigationUtils.configurarNavegacion(this)
 
         // Inicializar vistas
         imgMascota = findViewById(R.id.imgMascota)

@@ -25,6 +25,7 @@ import com.example.dog_rider_login.local.entities.CitaLocal
 import com.example.dog_rider_login.local.entities.MascotaLocal
 import com.example.dog_rider_login.models.Mascota
 import com.example.dog_rider_login.models.Notificacion
+import com.example.dog_rider_login.utils.NavigationUtils
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -71,10 +72,6 @@ class HomeDuenoActivity : AppCompatActivity() {
                     val intent = Intent(this, PerfilActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.nav_add_pet -> {
-                    val intent = Intent(this, AddPetActivity::class.java)
-                    startActivity(intent)
-                }
                 R.id.nav_politica -> {
                     mostrarPoliticaPrivacidad()
                 }
@@ -93,8 +90,6 @@ class HomeDuenoActivity : AppCompatActivity() {
         val tvTituloCitasHeader = findViewById<TextView>(R.id.tvTituloCitasHeader)
         val containerMascotas = findViewById<LinearLayout>(R.id.containerMascotas)
         val btnAnadirMascota = findViewById<android.widget.Button>(R.id.btnAnadirMascota)
-        
-        val navCitas = findViewById<LinearLayout>(R.id.navCitas)
 
         // Configurar Botón Añadir Mascota
         btnAnadirMascota.setOnClickListener {
@@ -185,11 +180,8 @@ class HomeDuenoActivity : AppCompatActivity() {
             actualizarListaCitas(rvCitas)
         }
 
-        // Navegación Inferior: Citas (Solicitar nueva)
-        navCitas.setOnClickListener {
-            val intent = Intent(this, SolicitarCitaActivity::class.java)
-            startActivity(intent)
-        }
+        // Navigation Bar Inferior
+        NavigationUtils.configurarNavegacion(this)
 
         // Al hacer clic en la foto de perfil, abrir la pantalla de perfil
         ivUserProfile.setOnClickListener {

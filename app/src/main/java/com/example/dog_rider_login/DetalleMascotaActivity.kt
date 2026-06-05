@@ -1,12 +1,19 @@
 package com.example.dog_rider_login
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.dog_rider_login.network.RetrofitClient
+import com.example.dog_rider_login.network.models.AceptarPaseoRequest
+import com.example.dog_rider_login.network.models.AuthResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DetalleMascotaActivity : AppCompatActivity() {
 
@@ -14,80 +21,92 @@ class DetalleMascotaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_mascota)
 
-        val backButton = findViewById<Button>(R.id.backButton)
-
+        val backButton = findViewById<ImageButton>(R.id.backButton)
         val startWalkButton = findViewById<Button>(R.id.startWalkButton)
         val payButton = findViewById<Button>(R.id.payButton)
 
         val dogImage = findViewById<ImageView>(R.id.dogImage)
-
         val dogName = findViewById<TextView>(R.id.dogName)
         val dogBreed = findViewById<TextView>(R.id.dogBreed)
         val dogAge = findViewById<TextView>(R.id.dogAge)
         val dogPersonality = findViewById<TextView>(R.id.dogPersonality)
         val dogHour = findViewById<TextView>(R.id.dogHour)
         val dogPrice = findViewById<TextView>(R.id.dogPrice)
+        val tvDueno = findViewById<TextView>(R.id.tvDuenoEmail)
 
-        // DATOS
+        // CAPTURAR DATOS DEL INTENT
+        val idCita = intent.getIntExtra("id", 0)
+        val estadoActual = intent.getStringExtra("estado") ?: "ACEPTADO"
+        val nombre = intent.getStringExtra("nombre") ?: "Mascota"
+        val raza = intent.getStringExtra("raza") ?: "Desconocida"
+        val edad = intent.getStringExtra("edad") ?: "N/A"
+        val duracion = intent.getStringExtra("duracion") ?: "N/A"
+        val notas = intent.getStringExtra("personalidad") ?: getString(R.string.sin_notas)
+        val hora = intent.getStringExtra("hora") ?: "--:--"
+        val precio = intent.getStringExtra("precio") ?: "$0"
+        val emailDueno = intent.getStringExtra("dueno") ?: "Desconocido"
 
-        val nombre = intent.getStringExtra("nombre")
-        val raza = intent.getStringExtra("raza")
-        val edad = intent.getStringExtra("edad")
-        val personalidad = intent.getStringExtra("personalidad")
-        val hora = intent.getStringExtra("hora")
-        val precio = intent.getStringExtra("precio")
-
-        val imagen = intent.getIntExtra("imagen", R.drawable.rocky)
-
-        // MOSTRAR
-
+        // MOSTRAR DATOS
         dogName.text = nombre
-        dogBreed.text = "🐶 Raza: $raza"
-        dogAge.text = "🎂 Edad: $edad"
-        dogPersonality.text = "😎 Personalidad: $personalidad"
-        dogHour.text = "🕒 Paseo: $hora"
+        dogBreed.text = getString(R.string.label_raza_detalle, raza)
+        dogAge.text = getString(R.string.label_edad_detalle, edad)
+        dogPersonality.text = getString(R.string.label_notas_detalle, notas)
+        dogHour.text = getString(R.string.label_hora_detalle, hora, duracion)
         dogPrice.text = precio
+        tvDueno.text = getString(R.string.label_dueno_detalle, emailDueno)
 
-        dogImage.setImageResource(imagen)
+        dogImage.setImageResource(R.drawable.app_logo)
 
-        // VOLVER
-
-        backButton.setOnClickListener {
-
-            finish()
-
+        // LOGICA DE BOTON DINAMICO
+        startWalkButton.text = if (estadoActual == "EN_CURSO") {
+            getString(R.string.btn_finalizar_paseo_text)
+        } else {
+            getString(R.string.btn_iniciar_paseo)
         }
 
-        // INICIAR PASEO
+        payButton.visibility = View.GONE
+        backButton.setOnClickListener { finish() }
 
         startWalkButton.setOnClickListener {
-
-            DogData.activeDogName = nombre!!
-            DogData.activeDogBreed = "$raza • $edad"
-            DogData.activeDogHour = "🕒 $hora"
-            DogData.activeDogImage = imagen
-
-            Toast.makeText(
-                this,
-                "Paseo iniciado con $nombre 🐕",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            startActivity(Intent(this, HomePaseadorActivity::class.java))
-
+            if (idCita != 0) {
+                if (estadoActual == "EN_CURSO") {
+                    finalizarPaseoReal(idCita, nombre)
+                } else {
+                    iniciarPaseoReal(idCita, nombre)
+                }
+            }
         }
+    }
 
-        // COBRAR
+    private fun iniciarPaseoReal(id: Int, nombre: String) {
+        val request = AceptarPaseoRequest(citaId = id, paseadorEmail = "")
+        RetrofitClient.instance.iniciarPaseo(request).enqueue(object : Callback<AuthResponse> {
+            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                val success = response.isSuccessful && (response.body()?.success == true)
+                if (success) {
+                    Toast.makeText(this@DetalleMascotaActivity, "¡Paseo iniciado con $nombre! 🐶", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
+            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                Toast.makeText(this@DetalleMascotaActivity, "Error de red", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
-        payButton.setOnClickListener {
-
-            Toast.makeText(
-                this,
-                "Pago recibido correctamente 💵",
-                Toast.LENGTH_SHORT
-            ).show()
-
-        }
-
+    private fun finalizarPaseoReal(id: Int, nombre: String) {
+        val request = AceptarPaseoRequest(citaId = id, paseadorEmail = "")
+        RetrofitClient.instance.finalizarPaseo(request).enqueue(object : Callback<AuthResponse> {
+            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                val success = response.isSuccessful && (response.body()?.success == true)
+                if (success) {
+                    Toast.makeText(this@DetalleMascotaActivity, "¡Paseo con $nombre finalizado! ✅", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
+            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                Toast.makeText(this@DetalleMascotaActivity, "Error de red", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

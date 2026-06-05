@@ -3,6 +3,7 @@ package com.example.dog_rider_login.network
 import com.example.dog_rider_login.network.models.*
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 // Interfaz que define todos los puntos de conexion (EndPoints) de mi API PHP
@@ -27,6 +28,34 @@ interface ApiService {
     // Ruta para guardar un nuevo paseo en Oracle
     @POST("solicitar_paseo.php")
     fun solicitarPaseo(@Body request: CitaRequest): Call<AuthResponse>
+
+    // Ruta para obtener todos los paseos pendientes (Para el Paseador)
+    @GET("obtener_paseos_pendientes.php")
+    fun obtenerPaseosPendientes(): Call<List<CitaRequest>>
+
+    // Ruta para aceptar un paseo
+    @POST("aceptar_paseo.php")
+    fun aceptarPaseo(@Body request: AceptarPaseoRequest): Call<AuthResponse>
+
+    // Ruta para obtener el paseo que el paseador tiene activo
+    @GET("obtener_paseo_activo.php")
+    fun obtenerPaseoActivo(@retrofit2.http.Query("email") email: String): Call<CitaRequest>
+
+    // Ruta para obtener el historial de paseos completados
+    @GET("obtener_historial_paseador.php")
+    fun obtenerHistorialPaseador(@retrofit2.http.Query("email") email: String): Call<List<CitaRequest>>
+
+    // Ruta para finalizar un paseo
+    @POST("finalizar_paseo.php")
+    fun finalizarPaseo(@Body request: AceptarPaseoRequest): Call<AuthResponse>
+
+    // Ruta para iniciar un paseo (Cambia a estado EN_CURSO)
+    @POST("iniciar_paseo.php")
+    fun iniciarPaseo(@Body request: AceptarPaseoRequest): Call<AuthResponse>
+
+    // Ruta para eliminar un registro del historial
+    @POST("eliminar_historial.php")
+    fun eliminarHistorial(@Body request: AceptarPaseoRequest): Call<AuthResponse>
 
     // Ruta para actualizar el perfil del usuario
     @POST("actualizar_perfil.php")

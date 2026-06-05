@@ -18,6 +18,7 @@ import com.example.dog_rider_login.local.entities.MascotaLocal
 import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.CitaRequest
+import com.example.dog_rider_login.utils.NavigationUtils
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -43,6 +44,9 @@ class SolicitarCitaActivity : AppCompatActivity() {
         val btnConfirmar = findViewById<Button>(R.id.btnConfirmarCita)
 
         btnBack.setOnClickListener { finish() }
+
+        // Navigation Bar Inferior
+        NavigationUtils.configurarNavegacion(this)
 
         // Contador de caracteres para notas
         etNotas.addTextChangedListener(
@@ -188,7 +192,15 @@ class SolicitarCitaActivity : AppCompatActivity() {
                     }
 
                     // 1. Intentar guardar en Oracle (Cloud)
-                    val request = CitaRequest(emailLogueado, mascota, fecha, hora, duracion, precio, notas)
+                    val request = CitaRequest(
+                        usuarioEmail = emailLogueado,
+                        mascota = mascota,
+                        fecha = fecha,
+                        hora = hora,
+                        duracion = duracion,
+                        precio = precio,
+                        notas = notas
+                    )
                     Toast.makeText(this@SolicitarCitaActivity, getString(R.string.msg_sincronizando), Toast.LENGTH_SHORT).show()
 
                     RetrofitClient.instance.solicitarPaseo(request).enqueue(object : Callback<AuthResponse> {

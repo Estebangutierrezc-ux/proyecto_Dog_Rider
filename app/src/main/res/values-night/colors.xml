@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta Otoñal para MODO OSCURO -->
+    <color name="black">#FFFDF5</color> <!-- El texto ahora es Crema (claro) -->
+    <color name="white">#2D1B18</color> <!-- Las tarjetas ahora son Marrón muy oscuro -->
+
+    <!-- El Naranja se mantiene pero un poco más brillante para que resalte -->
+    <color name="blue_primary">#F57C00</color>
+    <color name="golden_gold">#FFCC80</color>
+
+    <color name="light_gray">#BCAAA4</color> <!-- Gris claro terroso para subtítulos -->
+    <color name="edit_text_border">#4E342E</color>
+    <color name="spinner_bg">#3E2723</color>
+    <color name="red_error">#EF5350</color> <!-- Rojo más claro para que se vea en oscuro -->
+
+    <!-- Fondo de pantalla oscuro otoñal -->
+    <color name="background_autumn">#1B100E</color>
+
+    <!-- Colores fijos -->
+    <color name="static_white">#FFFFFF</color>
+    <color name="static_black">#000000</color>
+</resources>

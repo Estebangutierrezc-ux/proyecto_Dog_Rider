@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/background_autumn">
 
     <!-- Top Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +26,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/light_gray" />
+            app:tint="@color/blue_primary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -44,7 +45,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintTop_toBottomOf="@id/topBarCita">
 
         <LinearLayout
@@ -121,6 +122,7 @@
                 android:inputType="number"
                 android:paddingHorizontal="16dp"
                 android:importantForAutofill="no"
+                android:textColor="@color/black"
                 android:visibility="gone" />
 
             <!-- Precio Estimado -->
@@ -128,7 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:cardBackgroundColor="#E3F2FD"
+                app:cardBackgroundColor="@color/spinner_bg"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
@@ -184,6 +186,7 @@
                         android:background="@drawable/edit_text_background"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"
                         android:text="@string/seleccionar_punto" />
                 </LinearLayout>
 
@@ -212,6 +215,7 @@
                         android:background="@drawable/edit_text_background"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"
                         android:text="@string/hora_vacia" />
                 </LinearLayout>
             </LinearLayout>
@@ -236,6 +240,7 @@
                 android:maxLength="150"
                 android:inputType="textMultiLine"
                 android:importantForAutofill="no"
+                android:textColor="@color/black"
                 android:padding="16dp" />
 
             <TextView
@@ -252,15 +257,105 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginBottom="24dp"
                 android:background="@drawable/button_background"
                 app:backgroundTint="@null"
                 android:text="@string/btn_confirmar_solicitud"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/static_white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
+
+    <!-- Navigation Bar Inferior -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/navInicio"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_home"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_inicio"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navCitas"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_paseos"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_citas"
+                android:textColor="@color/blue_primary"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navChat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_chat"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_chat"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

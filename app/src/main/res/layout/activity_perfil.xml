@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/background_autumn"
     tools:context=".PerfilActivity">
 
     <!-- Header / Top Bar -->
@@ -25,13 +25,13 @@
             android:src="@android:drawable/ic_menu_revert"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+            app:tint="@color/static_white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/titulo_perfil"
-            android:textColor="@color/white"
+            android:textColor="@color/static_white"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/btnBackProfile"
@@ -49,7 +49,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+            app:tint="@color/static_white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintTop_toBottomOf="@id/profileHeader">
 
         <androidx.cardview.widget.CardView
@@ -107,7 +107,7 @@
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/hint_nombre_perfil"
                     android:paddingHorizontal="16dp"
-                    android:textColor="#333333"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:importantForAutofill="no"
                     android:maxLength="30"
@@ -131,7 +131,7 @@
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/hint_apellido_perfil"
                     android:paddingHorizontal="16dp"
-                    android:textColor="#333333"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:importantForAutofill="no"
                     android:maxLength="30"
@@ -156,7 +156,7 @@
                     android:hint="@string/hint_telefono_perfil"
                     android:inputType="phone"
                     android:paddingHorizontal="16dp"
-                    android:textColor="#333333"
+                    android:textColor="@color/black"
                     android:textSize="16sp"
                     android:maxLength="15"
                     android:importantForAutofill="no" />
@@ -178,7 +178,7 @@
                     android:layout_marginBottom="32dp"
                     android:paddingHorizontal="4dp"
                     android:text="@string/email_placeholder"
-                    android:textColor="#666666"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <!-- Botón -->
@@ -190,12 +190,100 @@
                     app:backgroundTint="@null"
                     android:text="@string/btn_guardar_cambios"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/static_white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </ScrollView>
+
+    <!-- Navigation Bar Inferior -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/navInicio"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_home"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_inicio"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navCitas"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_paseos"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_citas"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navChat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_chat"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_chat"
+                android:textColor="@color/light_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

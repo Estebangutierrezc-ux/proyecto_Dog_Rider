@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_nombre_placeholder"
-                    android:textColor="#333333"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_raza_placeholder"
-                    android:textColor="#666666"
+                    android:textColor="@color/light_gray"
                     android:textSize="14sp" />
 
                 <TextView
@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_edad_placeholder"
-                    android:textColor="#999999"
+                    android:textColor="@color/light_gray"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/msg_info_placeholder"
-                android:textColor="#666666"
+                android:textColor="@color/light_gray"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>

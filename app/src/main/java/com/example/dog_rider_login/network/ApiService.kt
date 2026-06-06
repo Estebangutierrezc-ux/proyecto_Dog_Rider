@@ -33,6 +33,10 @@ interface ApiService {
     @GET("obtener_paseos_pendientes.php")
     fun obtenerPaseosPendientes(): Call<List<CitaRequest>>
 
+    // Ruta para obtener todas las citas de un dueño (Para sincronizar estados)
+    @GET("obtener_citas_dueno.php")
+    fun obtenerCitasDueno(@retrofit2.http.Query("email") email: String): Call<List<CitaRequest>>
+
     // Ruta para aceptar un paseo
     @POST("aceptar_paseo.php")
     fun aceptarPaseo(@Body request: AceptarPaseoRequest): Call<AuthResponse>
@@ -53,9 +57,17 @@ interface ApiService {
     @POST("iniciar_paseo.php")
     fun iniciarPaseo(@Body request: AceptarPaseoRequest): Call<AuthResponse>
 
-    // Ruta para eliminar un registro del historial
+    // Ruta para eliminar un registro del historial (Paseador)
     @POST("eliminar_historial.php")
     fun eliminarHistorial(@Body request: AceptarPaseoRequest): Call<AuthResponse>
+
+    // Ruta para eliminar una mascota (Dueño)
+    @POST("eliminar_mascota.php")
+    fun eliminarMascota(@Body request: Map<String, String>): Call<AuthResponse>
+
+    // Ruta para eliminar una cita (Dueño)
+    @POST("eliminar_cita_dueno.php")
+    fun eliminarCitaDueno(@Body request: Map<String, Int>): Call<AuthResponse>
 
     // Ruta para actualizar el perfil del usuario
     @POST("actualizar_perfil.php")

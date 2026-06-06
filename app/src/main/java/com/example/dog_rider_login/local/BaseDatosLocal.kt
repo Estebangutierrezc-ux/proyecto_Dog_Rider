@@ -12,7 +12,7 @@ import com.example.dog_rider_login.local.entities.MascotaLocal
 import com.example.dog_rider_login.local.entities.UsuarioLocal
 
 // Clase que gestiona la base de datos interna del celular (Room)
-@Database(entities = [UsuarioLocal::class, CitaLocal::class, MascotaLocal::class], version = 5, exportSchema = false)
+@Database(entities = [UsuarioLocal::class, CitaLocal::class, MascotaLocal::class], version = 8, exportSchema = false)
 abstract class BaseDatosLocal : RoomDatabase() {
     
     abstract fun usuarioDao(): UsuarioDao

@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -25,13 +26,22 @@ import com.example.dog_rider_login.local.entities.CitaLocal
 import com.example.dog_rider_login.local.entities.MascotaLocal
 import com.example.dog_rider_login.models.Mascota
 import com.example.dog_rider_login.models.Notificacion
+import com.example.dog_rider_login.network.RetrofitClient
+import com.example.dog_rider_login.network.models.AuthResponse
+import com.example.dog_rider_login.network.models.CitaRequest
 import com.example.dog_rider_login.utils.NavigationUtils
+
+import com.example.dog_rider_login.utils.SessionManager
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeDuenoActivity : AppCompatActivity() {
 
+    private lateinit var sessionManager: SessionManager
     private var listaMascotasCompleta = listOf<MascotaLocal>()
     private var estaExpandidoMascotas = false
     
@@ -45,6 +55,8 @@ class HomeDuenoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home_dueno)
+
+        sessionManager = SessionManager(this)
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
         val navView = findViewById<NavigationView>(R.id.navView)
@@ -62,8 +74,7 @@ class HomeDuenoActivity : AppCompatActivity() {
         // Configurar Info del Header del Drawer
         val headerView = navView.getHeaderView(0)
         val tvEmailHeader = headerView.findViewById<TextView>(R.id.tvUserEmailHeader)
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val emailUser = sharedPref.getString("user_email", "usuario@ejemplo.com")
+        val emailUser = sessionManager.getUserEmail() ?: "usuario@ejemplo.com"
         tvEmailHeader.text = emailUser
 
         navView.setNavigationItemSelectedListener { menuItem ->
@@ -130,7 +141,7 @@ class HomeDuenoActivity : AppCompatActivity() {
 
         // Cargar Mascotas Reales filtradas por el usuario logueado
         lifecycleScope.launch {
-            val emailLogueado = sharedPref.getString("user_email", "") ?: ""
+            val emailLogueado = sessionManager.getUserEmail() ?: ""
             BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity)
                 .mascotaDao()
                 .obtenerMascotasPorDuenio(emailLogueado)
@@ -142,7 +153,7 @@ class HomeDuenoActivity : AppCompatActivity() {
 
         // Cargar Citas Reales filtradas por el usuario logueado
         lifecycleScope.launch {
-            val emailLogueado = sharedPref.getString("user_email", "") ?: ""
+            val emailLogueado = sessionManager.getUserEmail() ?: ""
             BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity)
                 .citaDao()
                 .obtenerCitasPorUsuario(emailLogueado)
@@ -202,6 +213,46 @@ class HomeDuenoActivity : AppCompatActivity() {
         // Refrescar datos del menú lateral al volver de Ajustes de Perfil
         val navView = findViewById<NavigationView>(R.id.navView)
         actualizarDatosNavegacion(navView)
+        
+        // Sincronizar estados de las citas desde el servidor
+        syncCitasConServidor()
+    }
+
+    private fun syncCitasConServidor() {
+        val emailLogueado = sessionManager.getUserEmail() ?: ""
+        
+        if (emailLogueado.isEmpty()) return
+
+        RetrofitClient.instance.obtenerCitasDueno(emailLogueado).enqueue(object : Callback<List<CitaRequest>> {
+            override fun onResponse(call: Call<List<CitaRequest>>, response: Response<List<CitaRequest>>) {
+                if (response.isSuccessful) {
+                    val citasRemotas = response.body() ?: emptyList()
+                    
+                    lifecycleScope.launch {
+                        val db = BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity)
+                        val citasLocales = citasRemotas.map { remote ->
+                            CitaLocal(
+                                id = remote.id ?: 0,
+                                usuarioEmail = emailLogueado,
+                                mascota = remote.mascota,
+                                fecha = remote.fecha,
+                                hora = remote.hora,
+                                duracion = remote.duracion,
+                                precio = remote.precio,
+                                notas = remote.notas,
+                                foto = remote.foto,
+                                estado = remote.estado ?: "PENDIENTE"
+                            )
+                        }
+                        db.citaDao().insertarCitas(citasLocales)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<CitaRequest>>, t: Throwable) {
+                // Error de red silencioso
+            }
+        })
     }
 
     private fun actualizarDatosNavegacion(navView: NavigationView) {
@@ -209,10 +260,9 @@ class HomeDuenoActivity : AppCompatActivity() {
         val tvNombreHeader = headerView.findViewById<TextView>(R.id.tvUserNameHeader)
         val tvEmailHeader = headerView.findViewById<TextView>(R.id.tvUserEmailHeader)
         
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val nombre = sharedPref.getString("user_name", "")
-        val apellido = sharedPref.getString("user_lastname", "")
-        val emailUser = sharedPref.getString("user_email", "usuario@ejemplo.com")
+        val nombre = sessionManager.getUserName()
+        val apellido = sessionManager.getUserLastName()
+        val emailUser = sessionManager.getUserEmail() ?: "usuario@ejemplo.com"
 
         if (!nombre.isNullOrEmpty()) {
             tvNombreHeader.text = getString(R.string.formato_nombre_completo, nombre, apellido)
@@ -227,7 +277,9 @@ class HomeDuenoActivity : AppCompatActivity() {
             listaMascotasCompleta.take(3)
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = MascotaAdapter(listaAMostrar)
+        recyclerView.adapter = MascotaAdapter(listaAMostrar) { mascota ->
+            confirmarEliminarMascota(mascota)
+        }
     }
 
     private fun actualizarListaCitas(recyclerView: RecyclerView) {
@@ -237,7 +289,54 @@ class HomeDuenoActivity : AppCompatActivity() {
             listaCitasCompleta.take(3)
         }
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = CitaAdapter(listaAMostrar)
+        recyclerView.adapter = CitaAdapter(listaAMostrar) { cita ->
+            confirmarEliminarCita(cita)
+        }
+    }
+
+    private fun confirmarEliminarMascota(mascota: MascotaLocal) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar Mascota")
+            .setMessage("¿Estás seguro de eliminar a ${mascota.nombre}? Se borrarán también sus citas.")
+            .setPositiveButton("Eliminar") { _, _ ->
+                val request = mapOf("nombre" to mascota.nombre, "email" to mascota.duenoEmail)
+                RetrofitClient.instance.eliminarMascota(request).enqueue(object : Callback<AuthResponse> {
+                    override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                        if (response.isSuccessful && response.body()?.success == true) {
+                            lifecycleScope.launch {
+                                BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity).mascotaDao().eliminarMascotaPorNombre(mascota.nombre, mascota.duenoEmail)
+                                Toast.makeText(this@HomeDuenoActivity, "Mascota eliminada", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<AuthResponse>, t: Throwable) {}
+                })
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun confirmarEliminarCita(cita: CitaLocal) {
+        AlertDialog.Builder(this)
+            .setTitle("Cancelar Cita")
+            .setMessage("¿Deseas cancelar el paseo de ${cita.mascota}?")
+            .setPositiveButton("Sí, cancelar") { _, _ ->
+                val request = mapOf("citaId" to cita.id)
+                RetrofitClient.instance.eliminarCitaDueno(request).enqueue(object : Callback<AuthResponse> {
+                    override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                        if (response.isSuccessful && response.body()?.success == true) {
+                            lifecycleScope.launch {
+                                BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity).citaDao().eliminarCitaPorId(cita.id)
+                                Toast.makeText(this@HomeDuenoActivity, "Cita cancelada", Toast.LENGTH_SHORT).show()
+                                syncCitasConServidor()
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<AuthResponse>, t: Throwable) {}
+                })
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun mostrarPoliticaPrivacidad() {

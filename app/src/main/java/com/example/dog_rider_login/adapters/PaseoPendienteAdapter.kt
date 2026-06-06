@@ -3,8 +3,10 @@ package com.example.dog_rider_login.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.dog_rider_login.R
 import com.example.dog_rider_login.network.models.CitaRequest
 
@@ -14,6 +16,7 @@ class PaseoPendienteAdapter(
 ) : RecyclerView.Adapter<PaseoPendienteAdapter.PaseoViewHolder>() {
 
     class PaseoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val ivMascota: ImageView = view.findViewById(R.id.ivMascotaDisponible)
         val tvNombre: TextView = view.findViewById(R.id.tvNombrePerro)
         val tvPrecio: TextView = view.findViewById(R.id.tvPrecioPaseo)
         val tvInfo: TextView = view.findViewById(R.id.tvInfoPaseo)
@@ -33,9 +36,20 @@ class PaseoPendienteAdapter(
         holder.tvNombre.text = paseo.mascota
         holder.tvPrecio.text = paseo.precio
         
-        // Formatear info: Fecha, Hora y Duración
         val infoCompleta = "${context.getString(R.string.formato_fecha_hora, paseo.fecha, paseo.hora)} (${paseo.duracion})"
         holder.tvInfo.text = infoCompleta
+
+        // Lógica de Imagen Inteligente
+        val fotoKey = paseo.foto ?: ""
+        if (fotoKey.startsWith("avatar_")) {
+            val idRes = context.resources.getIdentifier(fotoKey, "drawable", context.packageName)
+            holder.ivMascota.setImageResource(if (idRes != 0) idRes else R.drawable.app_logo)
+        } else if (fotoKey.isNotEmpty()) {
+            val url = "https://manual-celibacy-tannery.ngrok-free.dev/dog_rider_api/uploads/$fotoKey"
+            Glide.with(context).load(url).centerCrop().into(holder.ivMascota)
+        } else {
+            holder.ivMascota.setImageResource(R.drawable.app_logo)
+        }
 
         holder.btnAceptar.setOnClickListener {
             onAceptarClick(paseo)

@@ -45,6 +45,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintTop_toBottomOf="@id/topBarCita">
 
@@ -52,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,13 +68,13 @@
                 android:id="@+id/spinnerMascotasCita"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/spinner_background" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/label_duracion_paseo"
                 android:textColor="@color/light_gray"
                 android:textStyle="bold" />
@@ -80,7 +83,7 @@
                 android:id="@+id/chipGroupDuracion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
@@ -116,7 +119,7 @@
                 android:id="@+id/etDuracionPersonalizada"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/edit_text_background"
                 android:hint="@string/hint_minutos_custom"
                 android:inputType="number"
@@ -129,7 +132,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/spinner_bg"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
@@ -139,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -162,7 +165,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -182,7 +185,7 @@
                         android:id="@+id/tvFechaSeleccionada"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:background="@drawable/edit_text_background"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp"
@@ -191,7 +194,7 @@
                 </LinearLayout>
 
                 <View
-                    android:layout_width="16dp"
+                    android:layout_width="12dp"
                     android:layout_height="1dp" />
 
                 <LinearLayout
@@ -211,7 +214,7 @@
                         android:id="@+id/tvHoraSeleccionada"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:background="@drawable/edit_text_background"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="16dp"
@@ -223,7 +226,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/label_notas_especiales"
                 android:textColor="@color/light_gray"
                 android:textStyle="bold" />
@@ -232,16 +235,16 @@
                 android:id="@+id/etNotasCita"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/edit_text_background"
                 android:gravity="top"
                 android:hint="@string/hint_notas_paseo"
-                android:lines="4"
+                android:lines="3"
                 android:maxLength="150"
                 android:inputType="textMultiLine"
                 android:importantForAutofill="no"
                 android:textColor="@color/black"
-                android:padding="16dp" />
+                android:padding="12dp" />
 
             <TextView
                 android:id="@+id/tvCharCounter"
@@ -256,8 +259,8 @@
                 android:id="@+id/btnConfirmarCita"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/button_background"
                 app:backgroundTint="@null"
                 android:text="@string/btn_confirmar_solicitud"

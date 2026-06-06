@@ -6,10 +6,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "mascotas")
 data class MascotaLocal(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val duenoEmail: String, // Para separar por perfil
+    val duenoEmail: String,
     val nombre: String,
     val raza: String,
     val edad: String,
     val genero: String,
-    val notas: String
+    val notas: String,
+    val foto: String? = null // Guardaremos el nombre del archivo o la ruta local
 )

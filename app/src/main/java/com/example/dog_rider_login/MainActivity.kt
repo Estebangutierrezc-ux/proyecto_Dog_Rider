@@ -14,17 +14,22 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.LoginRequest
+import com.example.dog_rider_login.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var sessionManager: SessionManager
     
     // Metodo principal que se ejecuta al abrir la pantalla de Login
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        sessionManager = SessionManager(this)
         
         // Ajustar el diseño para que no choque con la barra de estado del celular
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -106,16 +111,14 @@ class MainActivity : AppCompatActivity() {
                     
                     // Si el servidor confirma que el usuario existe y la clave es correcta
                     if (authResponse?.success == true) {
-                        // Guardar los datos del perfil del usuario en SharedPreferences
-                        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-                        sharedPref.edit().apply {
-                            putString("user_email", email)
-                            putString("user_name", authResponse.nombre ?: "")
-                            putString("user_lastname", authResponse.apellido ?: "")
-                            putString("user_phone", authResponse.telefono ?: "")
-                            putBoolean("user_is_walker", authResponse.esPaseador ?: false)
-                            apply()
-                        }
+                        // Guardar los datos de forma segura usando SessionManager
+                        sessionManager.saveUserSession(
+                            email = email,
+                            name = authResponse.nombre ?: "",
+                            lastName = authResponse.apellido ?: "",
+                            phone = authResponse.telefono ?: "",
+                            isWalker = authResponse.esPaseador ?: false
+                        )
 
                         Toast.makeText(this@MainActivity, "¡Hola de nuevo!", Toast.LENGTH_SHORT).show()
                         

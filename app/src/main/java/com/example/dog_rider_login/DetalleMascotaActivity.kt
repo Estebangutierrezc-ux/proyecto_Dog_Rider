@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AceptarPaseoRequest
 import com.example.dog_rider_login.network.models.AuthResponse
@@ -45,6 +46,7 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val hora = intent.getStringExtra("hora") ?: "--:--"
         val precio = intent.getStringExtra("precio") ?: "$0"
         val emailDueno = intent.getStringExtra("dueno") ?: "Desconocido"
+        val foto = intent.getStringExtra("foto")
 
         // MOSTRAR DATOS
         dogName.text = nombre
@@ -55,7 +57,17 @@ class DetalleMascotaActivity : AppCompatActivity() {
         dogPrice.text = precio
         tvDueno.text = getString(R.string.label_dueno_detalle, emailDueno)
 
-        dogImage.setImageResource(R.drawable.app_logo)
+        if (!foto.isNullOrEmpty()) {
+            if (foto.startsWith("avatar_")) {
+                val idRes = resources.getIdentifier(foto, "drawable", packageName)
+                dogImage.setImageResource(if (idRes != 0) idRes else R.drawable.app_logo)
+            } else {
+                val url = "https://manual-celibacy-tannery.ngrok-free.dev/dog_rider_api/uploads/$foto"
+                Glide.with(this).load(url).centerCrop().into(dogImage)
+            }
+        } else {
+            dogImage.setImageResource(R.drawable.app_logo)
+        }
 
         // LOGICA DE BOTON DINAMICO
         startWalkButton.text = if (estadoActual == "EN_CURSO") {

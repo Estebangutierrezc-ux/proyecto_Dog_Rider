@@ -19,6 +19,7 @@ import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.CitaRequest
 import com.example.dog_rider_login.utils.NavigationUtils
+import com.example.dog_rider_login.utils.SessionManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -28,9 +29,15 @@ import java.util.Calendar
 import java.util.Locale
 
 class SolicitarCitaActivity : AppCompatActivity() {
+    
+    private lateinit var sessionManager: SessionManager
+    private var listaMascotasCargada = listOf<MascotaLocal>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_solicitar_cita)
+
+        sessionManager = SessionManager(this)
 
         val btnBack = findViewById<ImageButton>(R.id.btnBackSolicitarCita)
         val spinnerMascotas = findViewById<Spinner>(R.id.spinnerMascotasCita)
@@ -61,14 +68,14 @@ class SolicitarCitaActivity : AppCompatActivity() {
         )
 
         // Cargar Mascotas Reales del Usuario en el Spinner
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val emailUser = sharedPref.getString("user_email", "") ?: ""
+        val emailUser = sessionManager.getUserEmail() ?: ""
 
         lifecycleScope.launch {
             BaseDatosLocal.obtenerInstancia(this@SolicitarCitaActivity)
                 .mascotaDao()
                 .obtenerMascotasPorDuenio(emailUser)
                 .collectLatest { listaMascotas ->
+                    listaMascotasCargada = listaMascotas
                     val nombres = mutableListOf(getString(R.string.select_option))
                     nombres.addAll(listaMascotas.map { it.nombre })
                     
@@ -171,8 +178,12 @@ class SolicitarCitaActivity : AppCompatActivity() {
             val precio = tvPrecioEstimado.text.toString()
             val notas = etNotas.text.toString()
 
-            // Obtener el email del usuario logueado (Consistente con MainActivity)
-            val emailLogueado = sharedPref.getString("user_email", "usuario@desconocido.com") ?: ""
+            // Obtener el email del usuario logueado de forma segura
+            val emailLogueado = sessionManager.getUserEmail() ?: ""
+
+            // Buscar la foto de la mascota seleccionada
+            val mascotaSeleccionada = listaMascotasCargada.find { it.nombre == mascota }
+            val fotoMascota = mascotaSeleccionada?.foto
 
             // Verificar duplicados antes de procesar
             lifecycleScope.launch {
@@ -199,23 +210,27 @@ class SolicitarCitaActivity : AppCompatActivity() {
                         hora = hora,
                         duracion = duracion,
                         precio = precio,
-                        notas = notas
+                        notas = notas,
+                        foto = fotoMascota // Enviamos la foto a Oracle
                     )
                     Toast.makeText(this@SolicitarCitaActivity, getString(R.string.msg_sincronizando), Toast.LENGTH_SHORT).show()
 
                     RetrofitClient.instance.solicitarPaseo(request).enqueue(object : Callback<AuthResponse> {
                         override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                            if (response.isSuccessful && response.body()?.success == true) {
+                            val resBody = response.body()
+                            if (response.isSuccessful && resBody?.success == true) {
                                 // 2. Si se guardó en Oracle, guardamos en la base de datos local (Room)
                                 lifecycleScope.launch {
                                     val nuevaCita = CitaLocal(
-                                        usuarioEmail = emailLogueado, // Guardamos de quién es la cita
+                                        id = resBody.citaId ?: 0,
+                                        usuarioEmail = emailLogueado,
                                         mascota = mascota,
                                         fecha = fecha,
                                         hora = hora,
                                         duracion = duracion,
                                         precio = precio,
-                                        notas = notas
+                                        notas = notas,
+                                        foto = fotoMascota
                                     )
                                     
                                     db.citaDao().insertarCita(nuevaCita)

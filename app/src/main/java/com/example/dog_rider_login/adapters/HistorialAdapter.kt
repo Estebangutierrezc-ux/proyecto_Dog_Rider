@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.dog_rider_login.R
 import com.example.dog_rider_login.network.models.CitaRequest
 
@@ -17,6 +18,7 @@ class HistorialAdapter(
 ) : RecyclerView.Adapter<HistorialAdapter.HistorialViewHolder>() {
 
     class HistorialViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val ivMascota: ImageView = view.findViewById(R.id.ivMascotaCita)
         val tvFecha: TextView = view.findViewById(R.id.tvFechaCita)
         val tvTitulo: TextView = view.findViewById(R.id.tvTituloCita)
         val tvDetalles: TextView = view.findViewById(R.id.tvDetallesCita)
@@ -40,6 +42,18 @@ class HistorialAdapter(
 
         val info = "Precio: ${item.precio}\nEstado: Completado ✅"
         holder.tvDetalles.text = info
+
+        // Lógica de Imagen
+        val fotoKey = item.foto ?: ""
+        if (fotoKey.startsWith("avatar_")) {
+            val idRes = context.resources.getIdentifier(fotoKey, "drawable", context.packageName)
+            holder.ivMascota.setImageResource(if (idRes != 0) idRes else R.drawable.app_logo)
+        } else if (fotoKey.isNotEmpty()) {
+            val url = "https://manual-celibacy-tannery.ngrok-free.dev/dog_rider_api/uploads/$fotoKey"
+            Glide.with(context).load(url).centerCrop().into(holder.ivMascota)
+        } else {
+            holder.ivMascota.setImageResource(R.drawable.app_logo)
+        }
 
         // El botón eliminar solo se ve al expandir
         holder.btnEliminar.visibility = View.VISIBLE 

@@ -27,17 +27,22 @@ import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.RegisterRequest
 import com.example.dog_rider_login.sync.SincronizacionWorker
 import com.example.dog_rider_login.utils.RedUtil
+import com.example.dog_rider_login.utils.SessionManager
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
+
+    private lateinit var sessionManager: SessionManager
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_register)
+
+        sessionManager = SessionManager(this)
         
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -157,15 +162,8 @@ class RegisterActivity : AppCompatActivity() {
             object : Callback<AuthResponse> {
                 override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
-                        // Guardar datos del usuario recién registrado para el perfil
-                        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-                        sharedPref.edit().apply {
-                            putString("user_name", nombre)
-                            putString("user_lastname", apellido)
-                            putString("user_email", email)
-                            putString("user_phone", telefono)
-                            apply()
-                        }
+                        // Guardar datos de forma segura
+                        sessionManager.saveUserSession(email, nombre, apellido, telefono, esPaseador)
 
                         Toast.makeText(this@RegisterActivity, "¡Cuenta creada con éxito!", Toast.LENGTH_SHORT).show()
                         finish()
@@ -203,15 +201,8 @@ class RegisterActivity : AppCompatActivity() {
             val db = BaseDatosLocal.obtenerInstancia(this@RegisterActivity)
             db.usuarioDao().insertarUsuario(usuario)
             
-            // Guardar también en SharedPreferences para que el perfil se vea aunque no haya internet
-            val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-            sharedPref.edit().apply {
-                putString("user_name", nombre)
-                putString("user_lastname", apellido)
-                putString("user_email", email)
-                putString("user_phone", telefono)
-                apply()
-            }
+            // Guardar también de forma segura
+            sessionManager.saveUserSession(email, nombre, apellido, telefono, esPaseador)
 
             programarSincronizacion()
             

@@ -15,8 +15,8 @@ import com.example.dog_rider_login.SolicitarCitaActivity
 object NavigationUtils {
 
     fun configurarNavegacion(activity: Activity) {
-        val sharedPref = activity.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val esPaseador = sharedPref.getBoolean("user_is_walker", false)
+        val sessionManager = SessionManager(activity)
+        val esPaseador = sessionManager.isWalker()
 
         // Botones comunes para ambos roles
         val navInicio = activity.findViewById<LinearLayout>(R.id.navInicio) ?: activity.findViewById<LinearLayout>(R.id.btnHome)

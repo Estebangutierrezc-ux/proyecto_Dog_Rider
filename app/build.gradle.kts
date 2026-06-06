@@ -19,7 +19,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -51,6 +52,12 @@ dependencies {
 
     // Volley (Usado en AddPetActivity por el compañero)
     implementation("com.android.volley:volley:1.2.1")
+
+    // Glide para cargar imágenes desde URL
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Seguridad: Encriptación de datos locales
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

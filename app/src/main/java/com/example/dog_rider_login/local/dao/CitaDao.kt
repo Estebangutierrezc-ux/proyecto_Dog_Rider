@@ -12,8 +12,14 @@ interface CitaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarCita(cita: CitaLocal)
 
-    @Query("SELECT * FROM citas WHERE usuarioEmail = :email ORDER BY timestamp DESC")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertarCitas(citas: List<CitaLocal>)
+
+    @Query("SELECT * FROM citas WHERE usuarioEmail = :email ORDER BY id DESC")
     fun obtenerCitasPorUsuario(email: String): Flow<List<CitaLocal>>
+
+    @Query("DELETE FROM citas WHERE id = :id")
+    suspend fun eliminarCitaPorId(id: Int)
 
     @Query("SELECT COUNT(*) FROM citas WHERE mascota = :mascota AND fecha = :fecha AND hora = :hora AND usuarioEmail = :email")
     suspend fun verificarDuplicado(mascota: String, fecha: String, hora: String, email: String): Int

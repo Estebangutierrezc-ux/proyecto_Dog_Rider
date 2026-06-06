@@ -92,6 +92,18 @@
                 android:text="@string/msg_info_placeholder"
                 android:textColor="@color/light_gray"
                 android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnEliminarMascota"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/red_error"
+                android:text="@string/btn_eliminar"
+                android:textColor="@color/static_white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -31,7 +31,8 @@ data class AuthResponse(
     val nombre: String? = null,
     val apellido: String? = null,
     val telefono: String? = null,
-    val esPaseador: Boolean? = null
+    val esPaseador: Boolean? = null,
+    val citaId: Int? = null // Añadimos para recibir el ID al crear cita
 )
 
 data class CitaRequest(
@@ -46,6 +47,7 @@ data class CitaRequest(
     val duracion: String,
     val precio: String,
     val notas: String,
+    val foto: String? = null, // Añadimos campo foto
     val estado: String? = "PENDIENTE"
 )
 

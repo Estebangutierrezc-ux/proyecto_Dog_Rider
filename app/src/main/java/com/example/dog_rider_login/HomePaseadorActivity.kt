@@ -15,10 +15,13 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.dog_rider_login.adapters.HistorialAdapter
 import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.CitaRequest
+import com.example.dog_rider_login.utils.NavigationUtils
+import com.example.dog_rider_login.utils.SessionManager
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,11 +29,16 @@ import retrofit2.Response
 
 class HomePaseadorActivity : AppCompatActivity() {
 
+    private lateinit var sessionManager: SessionManager
     private var paseoActivoActual: CitaRequest? = null
+    private var listaHistorialCompleta = listOf<CitaRequest>()
+    private var estaExpandidoHistorial = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_paseador)
+
+        sessionManager = SessionManager(this)
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayoutPaseador)
         val navView = findViewById<NavigationView>(R.id.navViewPaseador)
@@ -43,8 +51,7 @@ class HomePaseadorActivity : AppCompatActivity() {
 
         val headerView = navView.getHeaderView(0)
         val tvEmailHeader = headerView.findViewById<TextView>(R.id.tvUserEmailHeader)
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val emailUser = sharedPref.getString("user_email", "usuario@ejemplo.com")
+        val emailUser = sessionManager.getUserEmail() ?: "usuario@ejemplo.com"
         tvEmailHeader.text = emailUser
 
         navView.setNavigationItemSelectedListener { menuItem ->
@@ -78,6 +85,7 @@ class HomePaseadorActivity : AppCompatActivity() {
                 intent.putExtra("hora", paseo.hora)
                 intent.putExtra("precio", paseo.precio)
                 intent.putExtra("dueno", paseo.duenoNombre ?: paseo.usuarioEmail)
+                intent.putExtra("foto", paseo.foto)
                 startActivity(intent)
             }
         }
@@ -115,11 +123,18 @@ class HomePaseadorActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.btnChat).setOnClickListener {
             startActivity(Intent(this, ChatActivity::class.java))
         }
+
+        // BOTON VER TODAS HISTORIAL
+        val tvVerTodasHistorial = findViewById<TextView>(R.id.tvVerTodasHistorial)
+        tvVerTodasHistorial.setOnClickListener {
+            estaExpandidoHistorial = !estaExpandidoHistorial
+            tvVerTodasHistorial.text = if (estaExpandidoHistorial) getString(R.string.link_ver_menos) else getString(R.string.link_ver_todas)
+            actualizarListaHistorial()
+        }
     }
 
-    private fun cargarPaseoActivo(tvNombre: TextView, tvRaza: TextView, tvHora: TextView, ivFoto: ImageView) {
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val email = sharedPref.getString("user_email", "") ?: ""
+    private fun cargarPaseoActivo(tvNombre: TextView, tvRaza: TextView, tvHour: TextView, ivFoto: ImageView) {
+        val email = sessionManager.getUserEmail() ?: ""
 
         RetrofitClient.instance.obtenerPaseoActivo(email).enqueue(object : Callback<CitaRequest> {
             override fun onResponse(call: Call<CitaRequest>, response: Response<CitaRequest>) {
@@ -132,13 +147,23 @@ class HomePaseadorActivity : AppCompatActivity() {
                     } else {
                         body.duracion
                     }
-                    tvHora.text = getString(R.string.formato_hora_emoji, body.hora)
-                    ivFoto.setImageResource(R.drawable.app_logo)
+                    tvHour.text = getString(R.string.formato_hora_emoji, body.hora)
+                    
+                    val fotoKey = body.foto ?: ""
+                    if (fotoKey.startsWith("avatar_")) {
+                        val idRes = resources.getIdentifier(fotoKey, "drawable", packageName)
+                        ivFoto.setImageResource(if (idRes != 0) idRes else R.drawable.app_logo)
+                    } else if (fotoKey.isNotEmpty()) {
+                        val url = "https://manual-celibacy-tannery.ngrok-free.dev/dog_rider_api/uploads/$fotoKey"
+                        Glide.with(this@HomePaseadorActivity).load(url).centerCrop().into(ivFoto)
+                    } else {
+                        ivFoto.setImageResource(R.drawable.app_logo)
+                    }
                 } else {
                     paseoActivoActual = null
                     tvNombre.text = getString(R.string.sin_paseo_activo)
                     tvRaza.text = getString(R.string.aceptar_para_comenzar)
-                    tvHora.text = getString(R.string.hora_vacia)
+                    tvHour.text = getString(R.string.hora_vacia)
                     ivFoto.setImageResource(android.R.drawable.ic_menu_gallery)
                 }
             }
@@ -151,28 +176,43 @@ class HomePaseadorActivity : AppCompatActivity() {
     private fun cargarHistorialReal() {
         val rvHistorial = findViewById<RecyclerView>(R.id.rvHistorialPaseos)
         val tvSinHistorial = findViewById<TextView>(R.id.tvSinHistorial)
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val email = sharedPref.getString("user_email", "") ?: ""
+        val email = sessionManager.getUserEmail() ?: ""
 
         RetrofitClient.instance.obtenerHistorialPaseador(email).enqueue(object : Callback<List<CitaRequest>> {
             override fun onResponse(call: Call<List<CitaRequest>>, response: Response<List<CitaRequest>>) {
                 if (response.isSuccessful) {
-                    val lista = response.body() ?: emptyList()
-                    if (lista.isNotEmpty()) {
-                        rvHistorial.layoutManager = LinearLayoutManager(this@HomePaseadorActivity)
-                        rvHistorial.adapter = HistorialAdapter(lista) { item ->
-                            confirmarEliminarHistorial(item)
-                        }
-                        rvHistorial.visibility = View.VISIBLE
-                        tvSinHistorial.visibility = View.GONE
-                    } else {
-                        rvHistorial.visibility = View.GONE
-                        tvSinHistorial.visibility = View.VISIBLE
-                    }
+                    listaHistorialCompleta = response.body() ?: emptyList()
+                    actualizarListaHistorial()
                 }
             }
             override fun onFailure(call: Call<List<CitaRequest>>, t: Throwable) {}
         })
+    }
+
+    private fun actualizarListaHistorial() {
+        val rvHistorial = findViewById<RecyclerView>(R.id.rvHistorialPaseos)
+        val tvSinHistorial = findViewById<TextView>(R.id.tvSinHistorial)
+        val tvVerTodas = findViewById<TextView>(R.id.tvVerTodasHistorial)
+
+        if (listaHistorialCompleta.isNotEmpty()) {
+            val listaAMostrar = if (estaExpandidoHistorial) {
+                listaHistorialCompleta
+            } else {
+                listaHistorialCompleta.take(2) // Mostrar solo 2 inicialmente
+            }
+
+            rvHistorial.layoutManager = LinearLayoutManager(this)
+            rvHistorial.adapter = HistorialAdapter(listaAMostrar) { item ->
+                confirmarEliminarHistorial(item)
+            }
+            rvHistorial.visibility = View.VISIBLE
+            tvSinHistorial.visibility = View.GONE
+            tvVerTodas.visibility = if (listaHistorialCompleta.size > 2) View.VISIBLE else View.GONE
+        } else {
+            rvHistorial.visibility = View.GONE
+            tvSinHistorial.visibility = View.VISIBLE
+            tvVerTodas.visibility = View.GONE
+        }
     }
 
     override fun onResume() {
@@ -193,10 +233,9 @@ class HomePaseadorActivity : AppCompatActivity() {
         val tvNombreHeader = headerView.findViewById<TextView>(R.id.tvUserNameHeader)
         val tvEmailHeader = headerView.findViewById<TextView>(R.id.tvUserEmailHeader)
 
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val nombre = sharedPref.getString("user_name", "")
-        val apellido = sharedPref.getString("user_lastname", "")
-        val emailUser = sharedPref.getString("user_email", "usuario@ejemplo.com")
+        val nombre = sessionManager.getUserName()
+        val apellido = sessionManager.getUserLastName()
+        val emailUser = sessionManager.getUserEmail() ?: "usuario@ejemplo.com"
 
         if (!nombre.isNullOrEmpty()) {
             tvNombreHeader.text = getString(R.string.formato_nombre_completo, nombre, apellido)
@@ -240,8 +279,7 @@ class HomePaseadorActivity : AppCompatActivity() {
             .setTitle("Cerrar Sesión")
             .setMessage("¿Deseas salir?")
             .setPositiveButton("Sí, salir") { _, _ ->
-                val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-                sharedPref.edit { clear() }
+                sessionManager.logout()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)

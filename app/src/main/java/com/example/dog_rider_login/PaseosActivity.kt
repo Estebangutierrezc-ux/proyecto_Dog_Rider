@@ -15,12 +15,14 @@ import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.AceptarPaseoRequest
 import com.example.dog_rider_login.network.models.CitaRequest
 import com.example.dog_rider_login.utils.NavigationUtils
+import com.example.dog_rider_login.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PaseosActivity : AppCompatActivity() {
 
+    private lateinit var sessionManager: SessionManager
     private val handler = Handler(Looper.getMainLooper())
     private val refreshRunnable = object : Runnable {
         override fun run() {
@@ -34,6 +36,8 @@ class PaseosActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paseos)
+
+        sessionManager = SessionManager(this)
 
         val backButton = findViewById<ImageButton>(R.id.backButton)
         
@@ -82,8 +86,7 @@ class PaseosActivity : AppCompatActivity() {
     }
 
     private fun confirmarAceptarPaseo(paseo: CitaRequest) {
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val emailPaseador = sharedPref.getString("user_email", "") ?: ""
+        val emailPaseador = sessionManager.getUserEmail() ?: ""
 
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Confirmar Paseo")

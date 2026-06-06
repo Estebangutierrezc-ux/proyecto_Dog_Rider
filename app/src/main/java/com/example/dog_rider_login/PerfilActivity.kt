@@ -13,15 +13,20 @@ import com.example.dog_rider_login.network.RetrofitClient
 import com.example.dog_rider_login.network.models.AuthResponse
 import com.example.dog_rider_login.network.models.UpdateProfileRequest
 import com.example.dog_rider_login.utils.NavigationUtils
+import com.example.dog_rider_login.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PerfilActivity : AppCompatActivity() {
 
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfil)
+
+        sessionManager = SessionManager(this)
 
         // Navigation Bar Inferior
         NavigationUtils.configurarNavegacion(this)
@@ -60,12 +65,11 @@ class PerfilActivity : AppCompatActivity() {
         }
         etTelefono.filters = arrayOf(filtroTelefono, InputFilter.LengthFilter(15))
 
-        // Cargar datos actuales desde SharedPreferences
-        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
-        val nombreActual = sharedPref.getString("user_name", "")
-        val apellidoActual = sharedPref.getString("user_lastname", "")
-        val emailActual = sharedPref.getString("user_email", "")
-        val telefonoActual = sharedPref.getString("user_phone", "")
+        // Cargar datos actuales desde SessionManager
+        val nombreActual = sessionManager.getUserName()
+        val apellidoActual = sessionManager.getUserLastName()
+        val emailActual = sessionManager.getUserEmail()
+        val telefonoActual = sessionManager.getUserPhone()
 
         // Mostrar en la interfaz
         etNombre.setText(nombreActual)
@@ -136,11 +140,13 @@ class PerfilActivity : AppCompatActivity() {
                         btnGuardar.isEnabled = true
                         if (response.isSuccessful && (response.body()?.success == true)) {
                             // 2. Si se guardó en Oracle, actualizamos localmente
-                            sharedPref.edit {
-                                putString("user_name", nuevoNombre)
-                                putString("user_lastname", nuevoApellido)
-                                putString("user_phone", nuevoTelefono)
-                            }
+                            sessionManager.saveUserSession(
+                                email = emailActual ?: "",
+                                name = nuevoNombre,
+                                lastName = nuevoApellido,
+                                phone = nuevoTelefono,
+                                isWalker = sessionManager.isWalker()
+                            )
                             Toast.makeText(this@PerfilActivity, "Perfil actualizado con éxito", Toast.LENGTH_SHORT).show()
                             finish()
                         } else {

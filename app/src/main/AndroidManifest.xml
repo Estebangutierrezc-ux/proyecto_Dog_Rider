@@ -20,6 +20,7 @@
         <!-- ACTIVIDADES ORIGINALES (LOGIN Y REGISTRO) -->
         <activity
             android:name=".SolicitarCitaActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".PerfilActivity"
@@ -75,9 +76,6 @@
             android:exported="false" />
 
         <!-- ACTIVIDADES DE AÑADIR MASCOTA -->
-        <activity
-            android:name=".MainActivityAnadir"
-            android:exported="false" />
         <activity
             android:name=".AddPetActivity"
             android:exported="false" />

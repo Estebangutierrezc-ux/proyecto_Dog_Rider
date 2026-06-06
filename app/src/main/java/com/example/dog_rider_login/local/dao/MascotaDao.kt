@@ -15,6 +15,9 @@ interface MascotaDao {
     @Query("SELECT * FROM mascotas WHERE duenoEmail = :email ORDER BY id DESC")
     fun obtenerMascotasPorDuenio(email: String): Flow<List<MascotaLocal>>
 
+    @Query("DELETE FROM mascotas WHERE nombre = :nombre AND duenoEmail = :email")
+    suspend fun eliminarMascotaPorNombre(nombre: String, email: String)
+
     @Query("DELETE FROM mascotas")
     suspend fun eliminarTodasLasMascotas()
 }

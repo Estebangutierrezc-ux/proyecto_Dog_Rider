@@ -12,8 +12,11 @@ interface MascotaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarMascota(mascota: MascotaLocal)
 
-    @Query("SELECT * FROM mascotas WHERE duenoEmail = :email ORDER BY id DESC")
+    @Query("SELECT * FROM mascotas WHERE duenoEmail = :email ORDER BY nombre ASC")
     fun obtenerMascotasPorDuenio(email: String): Flow<List<MascotaLocal>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertarMascotas(mascotas: List<MascotaLocal>)
 
     @Query("DELETE FROM mascotas WHERE nombre = :nombre AND duenoEmail = :email")
     suspend fun eliminarMascotaPorNombre(nombre: String, email: String)

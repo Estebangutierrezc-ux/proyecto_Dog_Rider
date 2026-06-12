@@ -14,6 +14,7 @@ data class CitaLocal(
     val precio: String,
     val notas: String,
     val foto: String? = null,
-    val estado: String = "PENDIENTE", // Nuevo: Para saber si está aceptado, en curso o finalizado
+    val estado: String = "PENDIENTE",
+    val paseadorEmail: String? = null, // Email del paseador si existe
     val timestamp: Long = System.currentTimeMillis()
 )

@@ -69,7 +69,23 @@ interface ApiService {
     @POST("eliminar_cita_dueno.php")
     fun eliminarCitaDueno(@Body request: Map<String, Int>): Call<AuthResponse>
 
+    // Ruta para obtener todas las mascotas de un dueño
+    @GET("obtener_mascotas_dueno.php")
+    fun obtenerMascotasDueno(@retrofit2.http.Query("email") email: String): Call<List<com.example.dog_rider_login.network.models.MascotaResponse>>
+
     // Ruta para actualizar el perfil del usuario
     @POST("actualizar_perfil.php")
     fun updateProfile(@Body request: UpdateProfileRequest): Call<AuthResponse>
+
+    // CHAT (MongoDB)
+    @POST("chat_enviar.php")
+    fun enviarMensaje(@Body request: com.example.dog_rider_login.network.models.ChatMessage): Call<AuthResponse>
+
+    @GET("chat_obtener.php")
+    fun obtenerMensajes(
+        @retrofit2.http.Query("id_cita") idCita: Int
+    ): Call<List<com.example.dog_rider_login.network.models.ChatMessage>>
+
+    @POST("chat_marcar_leido.php")
+    fun marcarMensajesLeidos(@Body request: Map<String, String>): Call<com.example.dog_rider_login.network.models.AuthResponse>
 }

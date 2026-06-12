@@ -30,8 +30,11 @@ object NavigationUtils {
                 } else {
                     Intent(activity, HomeDuenoActivity::class.java)
                 }
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                // FLAG_ACTIVITY_SINGLE_TOP evita que se cree una copia nueva si ya esta abierta
+                // FLAG_ACTIVITY_REORDER_TO_FRONT simplemente la trae al frente (Fluidez total)
+                intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 activity.startActivity(intent)
+                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             }
         }
 
@@ -39,8 +42,10 @@ object NavigationUtils {
             val targetClass = if (esPaseador) PaseosActivity::class.java else SolicitarCitaActivity::class.java
             if (activity.javaClass != targetClass) {
                 val intent = Intent(activity, targetClass)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                // Usamos la misma lógica de fluidez
+                intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 activity.startActivity(intent)
+                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             }
         }
 

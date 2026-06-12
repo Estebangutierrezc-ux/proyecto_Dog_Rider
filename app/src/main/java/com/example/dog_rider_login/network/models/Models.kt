@@ -47,8 +47,9 @@ data class CitaRequest(
     val duracion: String,
     val precio: String,
     val notas: String,
-    val foto: String? = null, // Añadimos campo foto
-    val estado: String? = "PENDIENTE"
+    val foto: String? = null,
+    val estado: String? = "PENDIENTE",
+    val paseadorEmail: String? = null // Añadimos para el chat
 )
 
 data class AceptarPaseoRequest(
@@ -61,4 +62,22 @@ data class UpdateProfileRequest(
     val nombre: String,
     val apellido: String,
     val telefono: String
+)
+
+data class ChatMessage(
+    val id_cita: Int,
+    val emisor: String,
+    val receptor: String,
+    val texto: String,
+    val fecha: String? = null,
+    val leido: Boolean = false
+)
+
+data class MascotaResponse(
+    val nombre: String,
+    val raza: String,
+    val edad: String,
+    val genero: String,
+    val comentarios: String,
+    val foto_nombre: String?
 )

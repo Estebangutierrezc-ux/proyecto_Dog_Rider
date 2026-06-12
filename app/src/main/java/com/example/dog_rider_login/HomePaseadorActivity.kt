@@ -120,9 +120,8 @@ class HomePaseadorActivity : AppCompatActivity() {
             startActivity(Intent(this, PaseosActivity::class.java))
         }
 
-        findViewById<LinearLayout>(R.id.btnChat).setOnClickListener {
-            startActivity(Intent(this, ChatActivity::class.java))
-        }
+        // Navigation Bar Inferior
+        NavigationUtils.configurarNavegacion(this)
 
         // BOTON VER TODAS HISTORIAL
         val tvVerTodasHistorial = findViewById<TextView>(R.id.tvVerTodasHistorial)
@@ -135,10 +134,13 @@ class HomePaseadorActivity : AppCompatActivity() {
 
     private fun cargarPaseoActivo(tvNombre: TextView, tvRaza: TextView, tvHour: TextView, ivFoto: ImageView) {
         val email = sessionManager.getUserEmail() ?: ""
+        val cardPaseo = findViewById<View>(R.id.cardPaseoActivo)
 
         RetrofitClient.instance.obtenerPaseoActivo(email).enqueue(object : Callback<CitaRequest> {
             override fun onResponse(call: Call<CitaRequest>, response: Response<CitaRequest>) {
                 val body = response.body()
+                cardPaseo.visibility = View.VISIBLE
+
                 if (response.isSuccessful && body?.id != null && body.id != 0) {
                     paseoActivoActual = body
                     tvNombre.text = body.mascota

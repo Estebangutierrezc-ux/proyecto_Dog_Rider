@@ -75,8 +75,20 @@ class AddPetActivity : AppCompatActivity() {
             }
             null
         }
+        // Filtro para evitar caracteres peligrosos en los comentarios (Anti-Hacking)
+        val filtroSeguridad = InputFilter { source, start, end, _, _, _ ->
+            val simbolosProhibidos = "<>{}[]^|\\"
+            for (i in start until end) {
+                if (simbolosProhibidos.contains(source[i])) {
+                    return@InputFilter ""
+                }
+            }
+            null
+        }
+
         etNombre.filters = arrayOf(filtroLetras, InputFilter.LengthFilter(30))
         etRaza.filters = arrayOf(filtroLetras, InputFilter.LengthFilter(30))
+        etComentarios.filters = arrayOf(filtroSeguridad, InputFilter.LengthFilter(150))
 
         etComentarios.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

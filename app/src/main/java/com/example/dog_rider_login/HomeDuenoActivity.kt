@@ -193,7 +193,7 @@ class HomeDuenoActivity : AppCompatActivity() {
 
         // Navigation Bar Inferior
         NavigationUtils.configurarNavegacion(this)
-
+        
         // Al hacer clic en la foto de perfil, abrir la pantalla de perfil
         ivUserProfile.setOnClickListener {
             val intent = Intent(this, PerfilActivity::class.java)
@@ -214,8 +214,40 @@ class HomeDuenoActivity : AppCompatActivity() {
         val navView = findViewById<NavigationView>(R.id.navView)
         actualizarDatosNavegacion(navView)
         
-        // Sincronizar estados de las citas desde el servidor
+
+
+        // Sincronizar datos desde el servidor
         syncCitasConServidor()
+        syncMascotasConServidor()
+    }
+
+    private fun syncMascotasConServidor() {
+        val emailLogueado = sessionManager.getUserEmail() ?: ""
+        if (emailLogueado.isEmpty()) return
+
+        RetrofitClient.instance.obtenerMascotasDueno(emailLogueado).enqueue(object : Callback<List<com.example.dog_rider_login.network.models.MascotaResponse>> {
+            override fun onResponse(call: Call<List<com.example.dog_rider_login.network.models.MascotaResponse>>, response: Response<List<com.example.dog_rider_login.network.models.MascotaResponse>>) {
+                if (response.isSuccessful) {
+                    val remotas = response.body() ?: emptyList()
+                    lifecycleScope.launch {
+                        val db = BaseDatosLocal.obtenerInstancia(this@HomeDuenoActivity)
+                        val locales = remotas.map { r ->
+                            MascotaLocal(
+                                duenoEmail = emailLogueado,
+                                nombre = r.nombre,
+                                raza = r.raza,
+                                edad = r.edad,
+                                genero = r.genero,
+                                notas = r.comentarios,
+                                foto = r.foto_nombre
+                            )
+                        }
+                        db.mascotaDao().insertarMascotas(locales)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<com.example.dog_rider_login.network.models.MascotaResponse>>, t: Throwable) {}
+        })
     }
 
     private fun syncCitasConServidor() {
@@ -241,7 +273,8 @@ class HomeDuenoActivity : AppCompatActivity() {
                                 precio = remote.precio,
                                 notas = remote.notas,
                                 foto = remote.foto,
-                                estado = remote.estado ?: "PENDIENTE"
+                                estado = remote.estado ?: "PENDIENTE",
+                                paseadorEmail = remote.paseadorEmail
                             )
                         }
                         db.citaDao().insertarCitas(citasLocales)

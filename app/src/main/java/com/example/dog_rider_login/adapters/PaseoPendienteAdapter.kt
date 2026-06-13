@@ -36,8 +36,8 @@ class PaseoPendienteAdapter(
         holder.tvNombre.text = paseo.mascota
         holder.tvPrecio.text = paseo.precio
         
-        val infoCompleta = "${context.getString(R.string.formato_fecha_hora, paseo.fecha, paseo.hora)} (${paseo.duracion})"
-        holder.tvInfo.text = infoCompleta
+        val dateTime = context.getString(R.string.formato_fecha_hora, paseo.fecha, paseo.hora)
+        holder.tvInfo.text = context.getString(R.string.formato_info_paseo_pendiente, dateTime, paseo.duracion)
 
         // Lógica de Imagen Inteligente
         val fotoKey = paseo.foto ?: ""

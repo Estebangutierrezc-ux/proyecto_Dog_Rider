@@ -39,9 +39,7 @@ class HistorialAdapter(
 
         holder.tvFecha.text = context.getString(R.string.formato_fecha_hora, item.fecha, item.hora)
         holder.tvTitulo.text = context.getString(R.string.titulo_paseo_mascota, item.mascota)
-
-        val info = "Precio: ${item.precio}\nEstado: Completado ✅"
-        holder.tvDetalles.text = info
+        holder.tvDetalles.text = context.getString(R.string.formato_info_historial, item.precio)
 
         // Lógica de Imagen
         val fotoKey = item.foto ?: ""
@@ -59,10 +57,10 @@ class HistorialAdapter(
         holder.btnEliminar.visibility = View.VISIBLE 
 
         holder.itemView.setOnClickListener {
-            val estaVisible = holder.layoutDetalles.isVisible
-            holder.layoutDetalles.isVisible = !estaVisible
+            val currentlyVisible = holder.layoutDetalles.isVisible
+            holder.layoutDetalles.isVisible = !currentlyVisible
             holder.ivExpand.setImageResource(
-                if (estaVisible) android.R.drawable.arrow_down_float 
+                if (currentlyVisible) android.R.drawable.arrow_down_float
                 else android.R.drawable.arrow_up_float
             )
         }

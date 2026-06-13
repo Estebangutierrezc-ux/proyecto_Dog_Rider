@@ -2,7 +2,8 @@ package com.example.dog_rider_login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -22,135 +23,90 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
+    private var btnLogin: Button? = null
     
-    // Metodo principal que se ejecuta al abrir la pantalla de Login
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        try {
+            enableEdgeToEdge()
+            setContentView(R.layout.activity_main)
+            
+            sessionManager = SessionManager(this)
 
-        sessionManager = SessionManager(this)
-        
-        // Ajustar el diseño para que no choque con la barra de estado del celular
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        // Capturar los elementos del diseño (XML) para usarlos en el codigo
-        val etEmail = findViewById<EditText>(R.id.etEmail)
-        val etPassword = findViewById<EditText>(R.id.etPassword)
-        val btnLogin = findViewById<Button>(R.id.btnLogin)
-        val tvForgotPassword = findViewById<TextView>(R.id.tvForgotPassword)
-        val tvRegister = findViewById<TextView>(R.id.tvRegister)
-
-        // Escuchar cuando el usuario hace clic en el boton de entrar
-        btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
-            val password = etPassword.text.toString().trim()
-
-            // Limpiar avisos rojos de errores anteriores para refrescar el intento
-            etEmail.error = null
-            etPassword.error = null
-
-            var hayError = false
-
-            // Validar Correo: no vacio, formato real y maximo 30 caracteres
-            if (email.isEmpty()) {
-                etEmail.error = "Campo obligatorio"
-                hayError = true
-            } else if (email.length > 30) {
-                etEmail.error = "Máximo 30 caracteres"
-                hayError = true
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                etEmail.error = "Formato de correo inválido"
-                hayError = true
-            }
-
-            // Validar Contraseña: no vacia y maximo 30 caracteres
-            if (password.isEmpty()) {
-                etPassword.error = "Campo obligatorio"
-                hayError = true
-            } else if (password.length > 30) {
-                etPassword.error = "Máximo 30 caracteres"
-                hayError = true
-            }
-
-            // Si paso la validacion visual, pregunto al servidor Oracle
-            if (!hayError) {
-                btnLogin.isEnabled = false // Deshabilitar para evitar múltiples clics
-                iniciarSesion(email, password, etEmail, etPassword)
-            }
-        }
-
-        // Abrir la pantalla para recuperar la clave
-        tvForgotPassword.setOnClickListener {
-            val intent = Intent(this, RecuperarContrasenaActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Abrir la pantalla para crear una cuenta nueva
-        tvRegister.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    // Funcion encargada de enviar los datos al PHP para verificar el acceso
-    private fun iniciarSesion(email: String, clave: String, fieldEmail: EditText, fieldPass: EditText) {
-        val request = LoginRequest(email, clave)
-        
-        // Conectar con el servidor usando Retrofit
-        RetrofitClient.instance.login(request).enqueue(
-            object : Callback<AuthResponse> {
-                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                val btnLogin = findViewById<Button>(R.id.btnLogin)
-                if (response.isSuccessful) {
-                    val authResponse = response.body()
-                    
-                    // Si el servidor confirma que el usuario existe y la clave es correcta
-                    if (authResponse?.success == true) {
-                        // Guardar los datos de forma segura usando SessionManager
-                        sessionManager.saveUserSession(
-                            email = email,
-                            name = authResponse.nombre ?: "",
-                            lastName = authResponse.apellido ?: "",
-                            phone = authResponse.telefono ?: "",
-                            isWalker = authResponse.esPaseador ?: false
-                        )
-
-                        Toast.makeText(this@MainActivity, "¡Hola de nuevo!", Toast.LENGTH_SHORT).show()
-                        
-                        // Redirección inteligente según el rol del usuario
-                        val esPaseador = authResponse.esPaseador ?: false
-                        val intent = if (esPaseador) {
-                            // Si es paseador, va a la interfaz de paseador
-                            Intent(this@MainActivity, HomePaseadorActivity::class.java)
-                        } else {
-                            // Si es dueño, va a su Home correspondiente
-                            Intent(this@MainActivity, HomeDuenoActivity::class.java)
-                        }
-
-                        startActivity(intent)
-                        finish() 
-                    } else {
-                        btnLogin.isEnabled = true // Re-habilitar si falla
-                        // SI LAS CREDENCIALES SON INCORRECTAS: Marco los campos en rojo
-                        fieldEmail.error = "Revise sus credenciales"
-                        fieldPass.error = "Revise sus credenciales"
-                        Toast.makeText(this@MainActivity, "Email o contraseña incorrectos", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    btnLogin.isEnabled = true // Re-habilitar si falla
-                    Toast.makeText(this@MainActivity, "Error en el servidor", Toast.LENGTH_SHORT).show()
+            val rootView = findViewById<View>(R.id.main)
+            rootView?.let { view ->
+                ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                    insets
                 }
             }
 
+            setupLoginLogic()
+            
+        } catch (e: Exception) {
+            Log.e("LOGIN_ERROR", "Error inicial: ${e.message}")
+            Toast.makeText(this, getString(R.string.error_inicio_sistema), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupLoginLogic() {
+        val etEmail = findViewById<EditText>(R.id.etEmail)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        btnLogin = findViewById(R.id.btnLogin)
+
+        btnLogin?.setOnClickListener {
+            val email = etEmail?.text.toString().trim()
+            val password = etPassword?.text.toString().trim()
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, getString(R.string.error_campos_vacios), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            btnLogin?.isEnabled = false
+            iniciarSesion(email, password)
+        }
+
+        findViewById<TextView>(R.id.tvForgotPassword)?.setOnClickListener {
+            startActivity(Intent(this, RecuperarContrasenaActivity::class.java))
+        }
+
+        findViewById<TextView>(R.id.tvRegister)?.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    private fun iniciarSesion(email: String, clave: String) {
+        val request = LoginRequest(email, clave)
+        RetrofitClient.instance.login(request).enqueue(object : Callback<AuthResponse> {
+            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val auth = response.body()!!
+                    sessionManager.saveUserSession(
+                        email = email,
+                        name = auth.nombre ?: "",
+                        lastName = auth.apellido ?: "",
+                        phone = auth.telefono ?: "",
+                        isWalker = auth.esPaseador ?: false
+                    )
+
+                    val intent = if (auth.esPaseador == true) {
+                        Intent(this@MainActivity, HomePaseadorActivity::class.java)
+                    } else {
+                        Intent(this@MainActivity, HomeDuenoActivity::class.java)
+                    }
+                    startActivity(intent)
+                    finish()
+                } else {
+                    btnLogin?.isEnabled = true
+                    Toast.makeText(this@MainActivity, getString(R.string.error_credenciales), Toast.LENGTH_SHORT).show()
+                }
+            }
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                val btnLogin = findViewById<Button>(R.id.btnLogin)
-                btnLogin.isEnabled = true // Re-habilitar si falla
-                Toast.makeText(this@MainActivity, "Falla de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                btnLogin?.isEnabled = true
+                Log.e("API_ERROR", "Fallo login: ${t.message}")
+                Toast.makeText(this@MainActivity, getString(R.string.error_conexion_servidor), Toast.LENGTH_SHORT).show()
             }
         })
     }

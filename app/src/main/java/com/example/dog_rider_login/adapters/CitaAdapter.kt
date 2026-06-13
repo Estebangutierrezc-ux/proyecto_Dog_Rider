@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -39,22 +38,17 @@ class CitaAdapter(
         
         holder.tvFecha.text = context.getString(R.string.formato_fecha_hora, cita.fecha, cita.hora)
         
-        // Texto del título con el estado
         val estadoTexto = when(cita.estado) {
-            "ACEPTADO" -> "¡Paseador asignado! 🐕"
-            "EN_CURSO" -> "En paseo ahora 🐾"
-            "FINALIZADO" -> "Paseo completado ✅"
-            else -> "Esperando paseador..."
+            "ACEPTADO" -> context.getString(R.string.estado_aceptado)
+            "EN_CURSO" -> context.getString(R.string.estado_en_curso)
+            "FINALIZADO" -> context.getString(R.string.estado_finalizado)
+            else -> context.getString(R.string.estado_pendiente)
         }
         
-        holder.tvTitulo.text = "${cita.mascota} - $estadoTexto"
+        holder.tvTitulo.text = context.getString(R.string.formato_estado_cita, cita.mascota, estadoTexto)
         
         val notasFinales = cita.notas.ifEmpty { context.getString(R.string.sin_notas) }
-        val infoDetallada = context.getString(R.string.info_duracion, cita.duracion) + "\n" +
-                           context.getString(R.string.info_precio, cita.precio) + "\n" +
-                           context.getString(R.string.info_notas, notasFinales)
-        
-        holder.tvDetalles.text = infoDetallada
+        holder.tvDetalles.text = context.getString(R.string.formato_info_cita, cita.duracion, cita.precio, notasFinales)
 
         // Imagen Inteligente
         val fotoKey = cita.foto ?: ""
@@ -66,16 +60,14 @@ class CitaAdapter(
             Glide.with(context).load(url).centerCrop().into(holder.ivMascota)
         }
 
-        // El botón de eliminar solo funciona si el paseo aún no ha empezado (o según tu lógica)
         holder.btnEliminar.visibility = if (cita.estado == "PENDIENTE") View.VISIBLE else View.GONE
         holder.btnEliminar.setOnClickListener { onDeleteClick(cita) }
         
-        // Manejar expansión
         holder.itemView.setOnClickListener {
-            val estaVisible = holder.layoutDetalles.isVisible
-            holder.layoutDetalles.isVisible = !estaVisible
+            val isCurrentlyVisible = holder.layoutDetalles.isVisible
+            holder.layoutDetalles.isVisible = !isCurrentlyVisible
             holder.ivExpand.setImageResource(
-                if (estaVisible) android.R.drawable.arrow_down_float 
+                if (isCurrentlyVisible) android.R.drawable.arrow_down_float
                 else android.R.drawable.arrow_up_float,
             )
         }

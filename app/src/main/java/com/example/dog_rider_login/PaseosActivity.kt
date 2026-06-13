@@ -3,6 +3,7 @@ package com.example.dog_rider_login
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -28,8 +29,10 @@ class PaseosActivity : AppCompatActivity() {
         override fun run() {
             val rvPaseos = findViewById<RecyclerView>(R.id.rvPaseosPendientes)
             val tvSinPaseos = findViewById<TextView>(R.id.tvSinPaseos)
-            cargarPaseosReales(rvPaseos, tvSinPaseos)
-            handler.postDelayed(this, 5000) // Refrescar cada 5 segundos
+            if (rvPaseos != null && tvSinPaseos != null) {
+                cargarPaseosReales(rvPaseos, tvSinPaseos)
+            }
+            handler.postDelayed(this, 5000)
         }
     }
 
@@ -38,15 +41,10 @@ class PaseosActivity : AppCompatActivity() {
         setContentView(R.layout.activity_paseos)
 
         sessionManager = SessionManager(this)
-
-        val backButton = findViewById<ImageButton>(R.id.backButton)
-        
-        // Navigation Bar Inferior
         NavigationUtils.configurarNavegacion(this)
 
-        backButton.setOnClickListener { finish() }
-        
-        findViewById<RecyclerView>(R.id.rvPaseosPendientes).layoutManager = LinearLayoutManager(this)
+        findViewById<ImageButton>(R.id.backButton)?.setOnClickListener { finish() }
+        findViewById<RecyclerView>(R.id.rvPaseosPendientes)?.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onResume() {
@@ -68,19 +66,19 @@ class PaseosActivity : AppCompatActivity() {
                         recyclerView.adapter = PaseoPendienteAdapter(lista) { paseo ->
                             confirmarAceptarPaseo(paseo)
                         }
-                        recyclerView.visibility = android.view.View.VISIBLE
-                        emptyView.visibility = android.view.View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                        emptyView.visibility = View.GONE
                     } else {
-                        recyclerView.visibility = android.view.View.GONE
-                        emptyView.visibility = android.view.View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                        emptyView.visibility = View.VISIBLE
                     }
                 } else {
-                    Toast.makeText(this@PaseosActivity, "Error al obtener paseos", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@PaseosActivity, getString(R.string.error_obtener_paseos), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<CitaRequest>>, t: Throwable) {
-                Toast.makeText(this@PaseosActivity, "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@PaseosActivity, getString(R.string.error_conexion_servidor), Toast.LENGTH_LONG).show()
             }
         })
     }
@@ -89,9 +87,9 @@ class PaseosActivity : AppCompatActivity() {
         val emailPaseador = sessionManager.getUserEmail() ?: ""
 
         androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Confirmar Paseo")
-            .setMessage("¿Deseas aceptar el paseo de ${paseo.mascota}?")
-            .setPositiveButton("Sí, aceptar") { _, _ ->
+            .setTitle(R.string.confirmar_paseo_title)
+            .setMessage(getString(R.string.confirmar_paseo_msg, paseo.mascota))
+            .setPositiveButton(android.R.string.ok) { _, _ ->
                 val request = AceptarPaseoRequest(
                     citaId = paseo.id ?: 0,
                     paseadorEmail = emailPaseador
@@ -100,16 +98,16 @@ class PaseosActivity : AppCompatActivity() {
                 RetrofitClient.instance.aceptarPaseo(request).enqueue(object : Callback<AuthResponse> {
                     override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                         if (response.isSuccessful && response.body()?.success == true) {
-                            Toast.makeText(this@PaseosActivity, "Paseo aceptado. ¡Ve por ${paseo.mascota}!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@PaseosActivity, getString(R.string.msg_paseo_aceptado_exito, paseo.mascota), Toast.LENGTH_LONG).show()
                             finish()
                         }
                     }
                     override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                        Toast.makeText(this@PaseosActivity, "Fallo al conectar", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PaseosActivity, getString(R.string.error_fallo_conectar), Toast.LENGTH_SHORT).show()
                     }
                 })
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 }

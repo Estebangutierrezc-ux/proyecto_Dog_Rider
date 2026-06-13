@@ -38,7 +38,6 @@ class ChatAdapter(
         if (holder is MeViewHolder) {
             holder.tvMsg.text = msg.texto
             holder.tvTime.text = timeText
-            // Lógica de checks
             holder.tvReadStatus.text = if (msg.leido) "✓✓" else "✓"
             holder.tvReadStatus.setTextColor(if (msg.leido) android.graphics.Color.CYAN else android.graphics.Color.LTGRAY)
         } else if (holder is OtherViewHolder) {
@@ -50,15 +49,21 @@ class ChatAdapter(
     private fun formatTime(fecha: String?): String {
         if (fecha.isNullOrEmpty()) return ""
         return try {
+            // El servidor envía "YYYY-MM-DD HH:MM:SS"
             val parts = fecha.split(" ")
-            if (parts.size > 1) parts[1].substring(0, 5) else ""
-        } catch (e: Exception) { "" }
+            if (parts.size > 1) {
+                parts[1].substring(0, 5) // Retorna solo "HH:MM"
+            } else {
+                fecha
+            }
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     override fun getItemCount() = messages.size
 
     fun updateMessages(newMessages: List<ChatMessage>) {
-        // Forzamos la actualización siempre que haya mensajes nuevos
         messages.clear()
         messages.addAll(newMessages)
         notifyDataSetChanged()

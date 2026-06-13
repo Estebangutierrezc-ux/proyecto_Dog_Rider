@@ -1,5 +1,6 @@
 package com.example.dog_rider_login.network
 
+import com.example.dog_rider_login.utils.Constants
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -8,8 +9,8 @@ import java.util.concurrent.TimeUnit
 
 // Objeto Singleton para gestionar la conexion global con el servidor PHP
 object RetrofitClient {
-    // URL generada por ngrok para acceso desde datos móviles
-    private const val BASE_URL = "https://manual-celibacy-tannery.ngrok-free.dev/dog_rider_api/"
+    // URL global desde constantes
+    private const val BASE_URL = Constants.BASE_URL
 
     // Configurar Gson para que sea flexible con las respuestas del PHP
     private val gson = GsonBuilder()

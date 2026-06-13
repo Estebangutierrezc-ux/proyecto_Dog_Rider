@@ -41,9 +41,9 @@ interface ApiService {
     @POST("aceptar_paseo.php")
     fun aceptarPaseo(@Body request: AceptarPaseoRequest): Call<AuthResponse>
 
-    // Ruta para obtener el paseo que el paseador tiene activo
+    // Ruta para obtener los paseos que el paseador tiene activos (Aceptados o En Curso)
     @GET("obtener_paseo_activo.php")
-    fun obtenerPaseoActivo(@retrofit2.http.Query("email") email: String): Call<CitaRequest>
+    fun obtenerPaseosActivos(@retrofit2.http.Query("email") email: String): Call<List<CitaRequest>>
 
     // Ruta para obtener el historial de paseos completados
     @GET("obtener_historial_paseador.php")
@@ -88,4 +88,11 @@ interface ApiService {
 
     @POST("chat_marcar_leido.php")
     fun marcarMensajesLeidos(@Body request: Map<String, String>): Call<com.example.dog_rider_login.network.models.AuthResponse>
+
+    // Estados de Conexión
+    @POST("actualizar_estado.php")
+    fun actualizarEstado(@Body request: Map<String, String>): Call<AuthResponse>
+
+    @GET("obtener_estado_usuario.php")
+    fun obtenerEstadoUsuario(@retrofit2.http.Query("email") email: String): Call<Map<String, Any>>
 }

@@ -41,8 +41,8 @@ class MascotaAdapter(
         holder.tvRaza.text = mascota.raza
         holder.tvEdad.text = context.getString(R.string.formato_edad, mascota.edad)
         
-        val detallesExtra = "Género: ${mascota.genero}\nNotas: ${mascota.notas.ifEmpty { context.getString(R.string.sin_notas) }}"
-        holder.tvDetalles.text = detallesExtra
+        val notasFinales = mascota.notas.ifEmpty { context.getString(R.string.sin_notas) }
+        holder.tvDetalles.text = context.getString(R.string.formato_detalles_mascota, mascota.genero, notasFinales)
 
         // Cargar imagen
         val fotoKey = mascota.foto ?: ""
@@ -51,16 +51,20 @@ class MascotaAdapter(
             holder.ivMascota.setImageResource(if (idRes != 0) idRes else R.drawable.app_logo)
         } else if (fotoKey.isNotEmpty()) {
             val urlImagen = "https://manual-celibacy-tannery.ngrok-free.dev/dog_rider_api/uploads/$fotoKey"
-            Glide.with(context).load(urlImagen).placeholder(android.R.drawable.ic_menu_gallery).centerCrop().into(holder.ivMascota)
+            Glide.with(context)
+                .load(urlImagen)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .centerCrop()
+                .into(holder.ivMascota)
         }
 
         holder.btnEliminar.setOnClickListener { onDeleteClick(mascota) }
         
         holder.itemView.setOnClickListener {
-            val estaVisible = holder.layoutDetalles.isVisible
-            holder.layoutDetalles.isVisible = !estaVisible
+            val isCurrentlyVisible = holder.layoutDetalles.isVisible
+            holder.layoutDetalles.isVisible = !isCurrentlyVisible
             holder.ivExpand.setImageResource(
-                if (estaVisible) android.R.drawable.arrow_down_float 
+                if (isCurrentlyVisible) android.R.drawable.arrow_down_float
                 else android.R.drawable.arrow_up_float
             )
         }
